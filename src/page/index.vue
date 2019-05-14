@@ -20,9 +20,8 @@ export default {
 
 <style scoped>
 .index_head,
-.index_main,
 .index_footer{
-  padding: 0 80px;
+  padding: 0 50px;
 }
 .index_main{
   min-height: 500px;
