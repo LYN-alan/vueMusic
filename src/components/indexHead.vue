@@ -22,6 +22,6 @@ export default {
   overflow: hidden;
   height: 50px;
   border-bottom: 1px solid #ddd;
-  padding: 10px 80px;
+  padding: 10px 50px;
 }
 </style>

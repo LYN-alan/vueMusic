@@ -25,4 +25,7 @@ h2{
   margin: 0;
   text-align: center;
 }
+body{
+  min-width: 1024px;
+}
 </style>
