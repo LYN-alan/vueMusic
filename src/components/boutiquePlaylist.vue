@@ -79,6 +79,7 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 .main_slide_left,
 .main_slide_right{
