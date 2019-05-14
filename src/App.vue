@@ -27,5 +27,6 @@ h2{
 }
 body{
   min-width: 1024px;
+  color: #000;
 }
 </style>
