@@ -1,6 +1,7 @@
 <template>
   <div class="main_Index_boutique">
     <h2 class="index_h2">精品歌单</h2>
+    <SongsKindList :currentClass="isHot" @getSongsList="_getHotSongsList"></SongsKindList>
     <SongsList :songsList="boutiquePlaylist" ref="songsList"></SongsList>
     <div class="main_slide_wrapper">
       <span class="main_slide_left">
@@ -8,8 +9,8 @@
           <i class="main_slide_left_icon"></i>
         </span>
       </span>
-      <span class="main_slide_right" @click="changeSongsListR">
-        <span class="main_slide_right_icon_wrapper main_slide_action_btn">
+      <span class="main_slide_right">
+        <span class="main_slide_right_icon_wrapper main_slide_action_btn" @click="changeSongsListR">
           <i class="main_slide_right_icon"></i>
         </span>
       </span>
@@ -19,29 +20,38 @@
 
 <script>
 import SongsList from '@/common/songsList'
+import SongsKindList from '@/common/songsKind'
 import {getHotSongsList} from '@/assets/connect/songsList'
+import {Debounce} from '@/assets/utils/public'
 export default {
   name: 'boutiquePlaylist',
   components: {
-    SongsList
+    SongsList,
+    SongsKindList
   },
   data () {
     return {
-      boutiquePlaylist: []
+      boutiquePlaylist: [],
+      isHot: true
     }
   },
   created () {
 
   },
   mounted () {
-    this._getHotSongsList()
+    this._getHotSongsList('hot')
   },
   methods: {
-    _getHotSongsList () {
+    _getHotSongsList (type) {
       let param = {
         pageSize: 10,
         page: 0,
-        orderType: 'hot'
+        orderType: type
+      }
+      if (type === 'hot') {
+        this.isHot = true
+      } else {
+        this.isHot = false
       }
       getHotSongsList(param).then((res) => {
         console.log(res.data)
@@ -52,11 +62,28 @@ export default {
         }
       })
     },
-    changeSongsListL () {
-      this.$refs.songsList.$emit('changeList')
+    changeSongsListL: Debounce(function () {
+      this.triggerChange('LEFT')
+    }, 200),
+    changeSongsListR: Debounce(function () {
+      this.triggerChange('RIGHT')
+    }, 200),
+    triggerChange (type) {
+      this.$refs.songsList.$emit('changeList', type)
     },
-    changeSongsListR () {
-      console.log(111)
+    getRandomArrayElements (arr, count) {
+      let shuffled = arr.slice(0)
+      let i = arr.length
+      let min = i - count
+      let temp
+      let index
+      while (i-- > min) {
+        index = Math.floor((i + 1) * Math.random())
+        temp = shuffled[index]
+        shuffled[index] = shuffled[i]
+        shuffled[i] = temp
+      }
+      return shuffled.slice(min)
     }
   }
 }

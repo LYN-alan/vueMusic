@@ -1,6 +1,7 @@
 <template>
   <div class="mic_home">
     <BoutiqueOlaylist></BoutiqueOlaylist>
+
   </div>
 </template>
 
