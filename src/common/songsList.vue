@@ -1,8 +1,8 @@
 <template>
   <div class="boutique_list_wrapper">
-    <ul class="boutique_list" ref="boutiqueList" style="left:-100%;">
-      <li v-for="(song,index) in songsList" :key="index">
-        <div class="songs_item_wrapper">
+    <el-carousel ref="carousel" indicator-position="none" height="280px" :autoplay=false :loop=true trigger="click" arrow="never">
+      <el-carousel-item class="song_list_item" v-for="(item, index) in songsList" :key="index">
+        <div class="songs_item_wrapper" v-for="(song, key) in item" :key="key">
           <div class="songs_cover_wrapper">
             <img class="songs_cover_pic" v-lazy="song.coverImgUrl" :key="song.coverImgUrl" alt="">
             <i class="songs_cover_mask"></i>
@@ -10,18 +10,11 @@
           </div>
           <h4 class="songs_title">{{song.name}}</h4>
           <p>播放量：{{formatCount(song.playCount)}}</p>
-        </div>
-      </li>
-    </ul>
-    <div class="js_jump_wrapper">
-      <span
-        @click="changeTransitionL"
-        :class="currentActiveL?'slide_switch_item_active':''"
-        class="js_jump slide_switch_item"></span>
-      <span
-        @click="changeTransitionR"
-        :class="currentActiveR?'slide_switch_item_active':''"
-        class="js_jump slide_switch_item"></span>
+        </div>>
+      </el-carousel-item>
+    </el-carousel>
+    <div class="indicator_wrapper">
+      <span @click="changeCarousel(index)" class="indicator_item" v-for="(item, index) in songsList" :class="currentActive === index ? 'currentActive' : ''" :key="index" :name="index"></span>
     </div>
   </div>
 </template>
@@ -32,35 +25,16 @@ export default {
   props: ['songsList'],
   data () {
     return {
-      currentTargetLeft: 0,
-      currentActiveL: true,
-      currentActiveR: false,
-      speed: 0,
-      slideKey: 1,
-      repeatClick: true,
-      itemWidth: 100 // 滚动一帧的宽度
+      currentActive: 0
     }
   },
   mounted () {
-    this.$on('changeList', (val) => {
-      if (val === 'LEFT') {
-        this.changeSongsListL()
-      } else {
-        this.changeSongsListR()
-      }
+    this.$on('nextCarousel', () => {
+      this.nextCarousel()
     })
-  },
-  watch: {
-    songsList: {
-      handler (newVal, oldVal) {
-        this.currentActiveL = true
-        this.currentActiveR = false
-        this.$refs.boutiqueList.style.left = -100 + '%'
-        this.slideKey = 1
-        this.itemWidth = 100
-      },
-      deep: true
-    }
+    this.$on('prevCarousel', () => {
+      this.prevCarousel()
+    })
   },
   methods: {
     formatCount (num) {
@@ -70,99 +44,15 @@ export default {
         return num
       }
     },
-    changeTransitionL () {
-      if (!this.currentActiveL) {
-        this.slideKey -= 1
-        this.currentActiveL = true
-        this.currentActiveR = false
-        this.startMove('LEFT')
-      }
+    prevCarousel () {
+      this.$refs.carousel.prev()
     },
-    changeTransitionR () {
-      if (!this.currentActiveR) {
-        this.slideKey += 1
-        this.currentActiveL = false
-        this.currentActiveR = true
-        this.startMove('RIGHT')
-      }
+    nextCarousel () {
+      this.$refs.carousel.next()
     },
-    startMove (type) {
-      let self = this
-      self.speed += 0.5
-      if (self.speed > 10) {
-        self.speed = 10
-      }
-      self.itemWidth -= self.speed
-      this.currentTargetLeft = this.$refs.boutiqueList.style.left
-      let currentTarge = this.currentTargetLeft.split('%')[0] * 1
-      if (type === 'LEFT') {
-        this.$refs.boutiqueList.style.left = ((currentTarge + this.speed) < -100) ? currentTarge + this.speed + '%' : -100 + '%'
-      } else if (type === 'RIGHT') {
-        this.$refs.boutiqueList.style.left = (currentTarge - this.speed) > -200 ? currentTarge - this.speed + '%' : -200 + '%'
-      } else if (type === 'SLIDEL') {
-        if (self.itemWidth > 0) {
-          this.$refs.boutiqueList.style.left = currentTarge + this.speed + '%'
-        } else {
-          this.$refs.boutiqueList.style.left = (self.slideKey * -100) + '%'
-        }
-      } else if (type === 'SLIDER') {
-        if (self.itemWidth > 0) {
-          this.$refs.boutiqueList.style.left = currentTarge - this.speed + '%'
-        } else {
-          this.$refs.boutiqueList.style.left = (self.slideKey * -100) + '%'
-        }
-      }
-      if (type === 'LEFT' || type === 'RIGHT') {
-        let timer = setInterval(function () {
-          let currentLeft = self.$refs.boutiqueList.style.left.split('%')[0] * 1
-          if (currentLeft > -200 && currentLeft < -100) {
-            self.startMove(type)
-          } else {
-            self.speed = 0
-            clearInterval(timer)
-          }
-        }, 110)
-      } else if (type === 'SLIDEL' || type === 'SLIDER') {
-        let slideTimer = setInterval(function () {
-          if (self.itemWidth > 0) {
-            self.startMove(type)
-          } else {
-            self.speed = 0
-            clearInterval(slideTimer)
-            self.$nextTick(function () {
-              self.repeatClick = true
-              if (self.slideKey === 0) {
-                self.slideKey = 2
-                self.$refs.boutiqueList.style.left = (self.slideKey * -100) + '%'
-              }
-              if (self.slideKey === 3) {
-                self.slideKey = 1
-                self.$refs.boutiqueList.style.left = (self.slideKey * -100) + '%'
-              }
-            })
-          }
-        }, 110)
-      }
-    },
-    changeSongsListL () {
-      if (this.repeatClick) {
-        this.repeatClick = false
-        this.currentActiveL = !this.currentActiveL
-        this.currentActiveR = !this.currentActiveR
-        this.slideKey -= 1
-        this.itemWidth = 100
-        this.startMove('SLIDEL')
-      }
-    },
-    changeSongsListR () {
-      if (this.repeatClick) {
-        this.repeatClick = false
-        this.currentActiveL = !this.currentActiveL
-        this.currentActiveR = !this.currentActiveR
-        this.slideKey += 1
-        this.itemWidth = 100
-        this.startMove('SLIDER')
-      }
+    changeCarousel (index) {
+      this.currentActive = index
+      this.$refs.carousel.setActiveItem(index)
     }
   }
 }
@@ -176,11 +66,6 @@ export default {
   z-index: 2;
   position: relative;
 }
-.boutique_list{
-  position: relative;
-  width: 1250%;
-  padding-bottom: 15px;
-}
 .songs_title{
   margin: 5px 0;
   line-height: 1.6;
@@ -189,12 +74,9 @@ export default {
 .songs_title:hover{
   color: #31c27c;
 }
-.boutique_list>li{
-  position: relative;
-  display: inline-block;
-  width: 1.6%;
-  vertical-align: top;
-  font-size: 14px;
+.song_list_item{
+  display: flex;
+  flex-direction: row;
 }
 .songs_cover_wrapper{
   margin-bottom: 15px;
@@ -207,43 +89,32 @@ export default {
   vertical-align:top;
 }
 .songs_item_wrapper{
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  margin-right: 20px;
+  width: 20%;
+  padding-right: 20px;
+  box-sizing: border-box;
 }
-.boutique_list>li:before{
-  content: "";
-  display: block;
-  width: 100%;
-  padding-top: 100%;
-  padding-bottom: 66px;
-}
-.js_jump_wrapper{
+.indicator_wrapper {
   text-align: center;
-  margin-bottom: 10px;
+  height: 40px;
 }
-.js_jump{
+.indicator_item{
+  display: inline-block;
   width: 10px;
   height: 10px;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
-  display: inline-block;
+  background-color: rgba(0,0,0,.1);
   cursor: pointer;
-  border: 8px solid #fff;
+  margin: 8px;
 }
-.slide_switch_item{
-  background-color:rgba(0,0,0,.1) ;
-}
-.slide_switch_item_active,
-.slide_switch_item:hover{
+.currentActive{
   background-color: rgba(0,0,0,.3);
 }
 .songs_cover_pic{
   transform: scale(1) translateZ(0);
   transition: transform .75s;
+  width: 100%;
 }
 .songs_cover_mask{
   position: absolute;

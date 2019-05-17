@@ -1,16 +1,18 @@
 <template>
   <div class="main_Index_boutique">
-    <h2 class="index_h2">精品歌单</h2>
-    <SongsKindList :currentClass="isHot" @getSongsList="_getHotSongsList"></SongsKindList>
+    <h2 class="index_h2">歌单推荐</h2>
+    <SongsKindList :currentClass="isHot"
+                   @getSongsList="_getHotSongsList"
+                   :songsListKind="songsListKind"></SongsKindList>
     <SongsList :songsList="boutiquePlaylist" ref="songsList"></SongsList>
     <div class="main_slide_wrapper">
       <span class="main_slide_left">
-        <span class="main_slide_left_icon_wrapper main_slide_action_btn" @click="changeSongsListL">
+        <span class="main_slide_left_icon_wrapper main_slide_action_btn" @click="prevCarousel">
           <i class="main_slide_left_icon"></i>
         </span>
       </span>
       <span class="main_slide_right">
-        <span class="main_slide_right_icon_wrapper main_slide_action_btn" @click="changeSongsListR">
+        <span class="main_slide_right_icon_wrapper main_slide_action_btn" @click="nextCarousel">
           <i class="main_slide_right_icon"></i>
         </span>
       </span>
@@ -21,8 +23,7 @@
 <script>
 import SongsList from '@/common/songsList'
 import SongsKindList from '@/common/songsKind'
-import {getHotSongsList} from '@/assets/connect/songsList'
-import {Debounce} from '@/assets/utils/public'
+import {getHotSongsList, getSongsListKinds} from '@/assets/connect/songsList'
 export default {
   name: 'boutiquePlaylist',
   components: {
@@ -32,44 +33,58 @@ export default {
   data () {
     return {
       boutiquePlaylist: [],
-      isHot: true
+      isHot: true,
+      songsListKind: []
     }
   },
   created () {
 
   },
   mounted () {
-    this._getHotSongsList('hot')
+    this._getHotSongsList('全部')
+    this._getSongsListKinds()
   },
   methods: {
-    _getHotSongsList (type) {
+    _getHotSongsList (cat) {
       let param = {
-        pageSize: 10,
+        cat: cat,
+        pageSize: 20,
         page: 0,
-        orderType: type
+        orderType: 'hot'
       }
-      if (type === 'hot') {
-        this.isHot = true
-      } else {
-        this.isHot = false
-      }
+      this.boutiquePlaylist = []
       getHotSongsList(param).then((res) => {
         console.log(res.data)
         let songsInfo = res.data
         if (songsInfo.code === 200) {
-          this.boutiquePlaylist = songsInfo.data
-          this.boutiquePlaylist = this.boutiquePlaylist.concat(songsInfo.data)
+          for (let i = 0, len = songsInfo.data.length; i < len; i += 5) {
+            this.boutiquePlaylist.push(songsInfo.data.slice(i, i + 5))
+          }
         }
       })
     },
-    changeSongsListL: Debounce(function () {
-      this.triggerChange('LEFT')
-    }, 200),
-    changeSongsListR: Debounce(function () {
-      this.triggerChange('RIGHT')
-    }, 200),
-    triggerChange (type) {
-      this.$refs.songsList.$emit('changeList', type)
+    prevCarousel () {
+      this.$refs.songsList.$emit('prevCarousel')
+    },
+    nextCarousel () {
+      this.$refs.songsList.$emit('nextCarousel')
+    },
+    _getSongsListKinds () {
+      getSongsListKinds().then(res => {
+        this.songsListKind.push({type: '全部', name: '为你推荐'})
+        let hotKindsList = []
+        res.data.data.sub.forEach(item => {
+          if (item.hot === true) {
+            hotKindsList.push(
+              {
+                type: item.name,
+                name: item.name
+              }
+            )
+          }
+        })
+        this.songsListKind = this.songsListKind.concat(this.getRandomArrayElements(hotKindsList, 5))
+      })
     },
     getRandomArrayElements (arr, count) {
       let shuffled = arr.slice(0)
