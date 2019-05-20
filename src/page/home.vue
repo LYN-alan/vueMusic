@@ -1,15 +1,20 @@
 <template>
   <div class="mic_home">
+    <!--    精品歌单-->
     <BoutiqueOlaylist></BoutiqueOlaylist>
+    <!--    新歌首发-->
+    <NewSongStart></NewSongStart>
   </div>
 </template>
 
 <script>
 import BoutiqueOlaylist from '@/components/boutiquePlaylist'
+import NewSongStart from '@/components/newSongStart'
 export default {
   name: 'home',
   components: {
-    BoutiqueOlaylist
+    BoutiqueOlaylist,
+    NewSongStart
   }
 }
 </script>

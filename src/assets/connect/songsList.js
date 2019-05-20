@@ -11,7 +11,7 @@ export function getSongsListKinds () {
 // 获取热门歌单
 export function getHotSongsList (data) {
   let options = {
-    categoryType: '全部',
+    categoryType: data.cat,
     pageSize: data.pageSize,
     orderType: data.orderType,
     page: data.page
@@ -21,12 +21,12 @@ export function getHotSongsList (data) {
 }
 // 新歌首发
 export function getNewestSongs () {
-  let url = ajaxHost + '/netease/song/new'
+  let url = ajaxHost + '/netease/song/newest'
   return Api.get(url)
 }
 // 新碟首发
 export function getNewestDisc () {
-  let url = ajaxHost + '/netease/album/new'
+  let url = ajaxHost + '/netease/album/newest'
   return Api.get(url)
 }
 // MV排行获取
