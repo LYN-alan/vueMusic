@@ -29,4 +29,10 @@ body{
   min-width: 1024px;
   color: #000;
 }
+.index_h2{
+  padding-top: 4.1667%;
+  padding-bottom: 2%;
+  font-size: 200%;
+  letter-spacing: 10px;
+}
 </style>

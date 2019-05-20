@@ -1,16 +1,18 @@
 <template>
   <div class="boutique_list_wrapper">
-    <el-carousel ref="carousel" indicator-position="none" height="280px" :autoplay=false :loop=true trigger="click" arrow="never">
+    <el-carousel ref="carousel" indicator-position="none" :height="songsItemHigh + 'px'" :autoplay=false :loop=true trigger="click" arrow="never">
       <el-carousel-item class="song_list_item" v-for="(item, index) in songsList" :key="index">
         <div class="songs_item_wrapper" v-for="(song, key) in item" :key="key">
-          <div class="songs_cover_wrapper">
-            <img class="songs_cover_pic" v-lazy="song.coverImgUrl" :key="song.coverImgUrl" alt="">
-            <i class="songs_cover_mask"></i>
-            <i class="songs_cover_icon_paly"></i>
+          <div class="songs_item_wrapper_box" ref="songsItemHeight">
+            <div class="songs_cover_wrapper">
+              <img @load="imgLoad" ref="imgHeight" class="songs_cover_pic" v-lazy="song.coverImgUrl" :key="song.coverImgUrl" alt="">
+              <i class="songs_cover_mask"></i>
+              <i class="songs_cover_icon_paly"></i>
+            </div>
+            <h4 class="songs_title">{{song.name}}</h4>
+            <p>播放量：{{formatCount(song.playCount)}}</p>
           </div>
-          <h4 class="songs_title">{{song.name}}</h4>
-          <p>播放量：{{formatCount(song.playCount)}}</p>
-        </div>>
+        </div>
       </el-carousel-item>
     </el-carousel>
     <div class="indicator_wrapper">
@@ -25,7 +27,8 @@ export default {
   props: ['songsList'],
   data () {
     return {
-      currentActive: 0
+      currentActive: 0,
+      songsItemHigh: 300
     }
   },
   mounted () {
@@ -34,6 +37,14 @@ export default {
     })
     this.$on('prevCarousel', () => {
       this.prevCarousel()
+    })
+    this.$on('resetCarouselData', () => {
+      this.currentActive = 0
+    })
+    window.addEventListener('resize', () => {
+      if (this.$refs.imgHeight[0]) {
+        this.songsItemHigh = this.$refs.imgHeight[0].height + 100
+      }
     })
   },
   methods: {
@@ -46,13 +57,21 @@ export default {
     },
     prevCarousel () {
       this.$refs.carousel.prev()
+      this.currentActive = this.$refs.carousel.activeIndex
     },
     nextCarousel () {
       this.$refs.carousel.next()
+      this.currentActive = this.$refs.carousel.activeIndex
     },
     changeCarousel (index) {
       this.currentActive = index
       this.$refs.carousel.setActiveItem(index)
+    },
+    imgLoad () {
+      this.$nextTick(() => {
+        // console.log(this.$refs.imgHeight[0].height)
+        this.songsItemHigh = this.$refs.imgHeight[0].height + 100
+      })
     }
   }
 }
@@ -62,7 +81,6 @@ export default {
 .boutique_list_wrapper{
   overflow: hidden;
   margin-right: -20px;
-  margin-bottom: 20px;
   z-index: 2;
   position: relative;
 }
@@ -89,9 +107,26 @@ export default {
   vertical-align:top;
 }
 .songs_item_wrapper{
+  display: inline-block;
   width: 20%;
-  padding-right: 20px;
-  box-sizing: border-box;
+  overflow: hidden;
+  font-size: 14px;
+  vertical-align: top;
+  position: relative;
+}
+.songs_item_wrapper:before{
+  content: "";
+  display: block;
+  width: 100%;
+  padding-top: 100%;
+  padding-bottom: 66px;
+}
+.songs_item_wrapper_box{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-right: 20px;
 }
 .indicator_wrapper {
   text-align: center;

@@ -2,6 +2,7 @@
   <div class="main_Index_boutique">
     <h2 class="index_h2">歌单推荐</h2>
     <SongsKindList :currentClass="isHot"
+                   ref="SongsKindList"
                    @getSongsList="_getHotSongsList"
                    :songsListKind="songsListKind"></SongsKindList>
     <SongsList :songsList="boutiquePlaylist" ref="songsList"></SongsList>
@@ -52,6 +53,7 @@ export default {
         page: 0,
         orderType: 'hot'
       }
+      this.resetCarouselData()
       this.boutiquePlaylist = []
       getHotSongsList(param).then((res) => {
         console.log(res.data)
@@ -68,6 +70,9 @@ export default {
     },
     nextCarousel () {
       this.$refs.songsList.$emit('nextCarousel')
+    },
+    resetCarouselData () {
+      this.$refs.songsList.$emit('resetCarouselData')
     },
     _getSongsListKinds () {
       getSongsListKinds().then(res => {
@@ -105,12 +110,6 @@ export default {
 </script>
 
 <style scoped>
-.index_h2{
-  padding-top: 4.1667%;
-  padding-bottom: 2%;
-  font-size: 200%;
-  letter-spacing: 10px;
-}
 .main_Index_boutique{
   padding: 0 50px;
   position: relative;

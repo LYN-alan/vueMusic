@@ -1,6 +1,6 @@
 <template>
   <div class="main_index_new_song">
-    <h2>新歌首发</h2>
+    <h2 class="index_h2">新歌首发</h2>
   </div>
 </template>
 
