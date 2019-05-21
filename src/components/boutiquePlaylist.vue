@@ -113,6 +113,7 @@ export default {
 .main_Index_boutique{
   padding: 0 50px;
   position: relative;
+  background: rgba(255,255,255,.5);
 }
 .main_slide_wrapper{
   position: absolute;
