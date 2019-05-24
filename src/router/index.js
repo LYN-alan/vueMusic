@@ -5,7 +5,7 @@ import Singers from '@/page/singers'
 import NewSongs from '@/page/newSongs'
 import Rank from '@/page/rank'
 import Kind from '@/page/kind'
-import Video from '@/page/video'
+import songsVideo from '@/page/songsVideo'
 import Search from '@/page/search'
 
 Vue.use(Router)
@@ -49,7 +49,7 @@ export default new Router({
     {
       path: '/video',
       name: 'video',
-      component: Video
+      component: songsVideo
     },
     {
       path: '/search',

@@ -3,14 +3,19 @@
     <ul class="new_song_list">
       <li class="new_song_item" v-for="(song, index) in newSongList" :key="index">
         <div class="songs_cover_wrapper">
-          <img @load="imgLoad" ref="imgHeight" class="songs_cover_pic" v-lazy="song.coverImgUrl" :key="song.coverImgUrl" alt="">
+          <img class="songs_cover_pic" v-lazy="song.coverImgUrl" :key="song.coverImgUrl" alt="">
           <i class="songs_cover_mask"></i>
           <i class="songs_cover_icon_paly"></i>
         </div>
         <div class="songs_info_wrapper">
           <div class="songs_info">
             <h4 class="song_info_name" :id="song.id">{{song.name}}</h4>
-            <p class="song_info_singer" :id="song.singerId">{{song.singer}}</p>
+            <p class="song_info_singer">
+              <span v-for="(item, index) in song.singer" :key="item.id">
+                <span v-if="index != 0"> / </span>
+                <span class="singer_name" @click="getSinger(item.id)">{{item.name}}</span>
+              </span>
+            </p>
             <p class="song_info_duration">{{formatDuraton(song.playTime)}}</p>
           </div>
         </div>
@@ -24,9 +29,6 @@ export default {
   name: 'newSongList',
   props: ['newSongList'],
   methods: {
-    imgLoad () {
-      console.log(1)
-    },
     formatDuraton (time) {
       let formatTime = ''
       if (time > -1) {
@@ -36,13 +38,15 @@ export default {
           formatTime += '0'
         }
         formatTime += min + ':'
-
         if (sec < 10) {
           formatTime += '0'
         }
         formatTime += sec
       }
       return formatTime
+    },
+    getSinger (id) {
+      console.log(id)
     }
   }
 }
@@ -94,7 +98,7 @@ export default {
     cursor: pointer;
   }
 .song_info_name:hover,
-.song_info_singer:hover{
+.singer_name:hover{
   color: #31c27c;
 }
 </style>

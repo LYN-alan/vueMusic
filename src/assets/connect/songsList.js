@@ -38,3 +38,12 @@ export function getMvRank (data) {
   }
   return Api.get(url, {params: options})
 }
+// 歌手排行榜
+export function getSingerRank (data) {
+  let url = ajaxHost + '/netease/artist/top'
+  let options = {
+    pageSize: data.pageSize,
+    page: data.page
+  }
+  return Api.get(url, {params: options})
+}
