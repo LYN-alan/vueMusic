@@ -2,17 +2,7 @@
   <div class="boutique_list_wrapper">
     <el-carousel ref="carousel" indicator-position="none" :height="songsItemHigh + 'px'" :autoplay=false :loop=true trigger="click" arrow="never">
       <el-carousel-item class="song_list_item" v-for="(item, index) in songsList" :key="index">
-        <div class="songs_item_wrapper" v-for="(song, key) in item" :key="key">
-          <div class="songs_item_wrapper_box" ref="songsItemHeight">
-            <div class="songs_cover_wrapper">
-              <img @load="imgLoad" ref="imgHeight" class="songs_cover_pic" v-lazy="song.coverImgUrl" :key="song.coverImgUrl" alt="">
-              <i class="songs_cover_mask"></i>
-              <i class="songs_cover_icon_paly"></i>
-            </div>
-            <h4 class="songs_title">{{song.name}}</h4>
-            <p>播放量：{{formatCount(song.playCount)}}</p>
-          </div>
-        </div>
+        <songsListView :songsList="item" @songsItemHigh="updateSongsItemHigh"></songsListView>
       </el-carousel-item>
     </el-carousel>
     <div class="indicator_wrapper">
@@ -22,9 +12,13 @@
 </template>
 
 <script>
+import songsListView from '@/common/songsListView'
 export default {
   name: 'songsList',
   props: ['songsList'],
+  components: {
+    songsListView
+  },
   data () {
     return {
       currentActive: 0,
@@ -41,20 +35,8 @@ export default {
     this.$on('resetCarouselData', () => {
       this.currentActive = 0
     })
-    window.addEventListener('resize', () => {
-      if (this.$refs.imgHeight[0]) {
-        this.songsItemHigh = this.$refs.imgHeight[0].height + 100
-      }
-    })
   },
   methods: {
-    formatCount (num) {
-      if (num > 10000) {
-        return (num / 10000).toFixed(2) + '万'
-      } else {
-        return num
-      }
-    },
     prevCarousel () {
       this.$refs.carousel.prev()
       this.currentActive = this.$refs.carousel.activeIndex
@@ -67,11 +49,8 @@ export default {
       this.currentActive = index
       this.$refs.carousel.setActiveItem(index)
     },
-    imgLoad () {
-      this.$nextTick(() => {
-        // console.log(this.$refs.imgHeight[0].height)
-        this.songsItemHigh = this.$refs.imgHeight[0].height + 100
-      })
+    updateSongsItemHigh (val) {
+      this.songsItemHigh = val
     }
   }
 }
@@ -84,43 +63,10 @@ export default {
   z-index: 2;
   position: relative;
 }
-.songs_title{
-  margin: 5px 0;
-  line-height: 1.6;
-  cursor: pointer;
-}
-.songs_title:hover{
-  color: #31c27c;
-}
+
 .song_list_item{
   display: flex;
   flex-direction: row;
-}
-.boutique_list>li img{
-  width: 100%;
-  vertical-align:top;
-}
-.songs_item_wrapper{
-  display: inline-block;
-  width: 20%;
-  overflow: hidden;
-  font-size: 14px;
-  vertical-align: top;
-  position: relative;
-}
-.songs_item_wrapper:before{
-  content: "";
-  display: block;
-  width: 100%;
-  padding-top: 100%;
-  padding-bottom: 66px;
-}
-.songs_item_wrapper_box{
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin-right: 20px;
 }
 .indicator_wrapper {
   text-align: center;
