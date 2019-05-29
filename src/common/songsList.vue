@@ -1,28 +1,48 @@
 <template>
   <div class="boutique_list_wrapper">
-    <el-carousel ref="carousel" indicator-position="none" :height="songsItemHigh + 'px'" :autoplay=false :loop=true trigger="click" arrow="never">
-      <el-carousel-item class="song_list_item" v-for="(item, index) in songsList" :key="index">
-        <songsListView :songsList="item" @songsItemHigh="updateSongsItemHigh"></songsListView>
-      </el-carousel-item>
-    </el-carousel>
-    <div class="indicator_wrapper">
-      <span @click="changeCarousel(index)" class="indicator_item" v-for="(item, index) in songsList" :class="currentActive === index ? 'currentActive' : ''" :key="index" :name="index"></span>
-    </div>
+    <swiperSong :options="swiperOptionSong" v-if="songsList.length>1">
+      <swiper-slide v-for="(item, index) in songsList" :key="index">
+        <songsListView :songsList="item"></songsListView>
+      </swiper-slide>
+    </swiperSong>
+    <div class="swiper-pagination"  slot="pagination"></div>
   </div>
 </template>
 
 <script>
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import songsListView from '@/common/songsListView'
 export default {
   name: 'songsList',
   props: ['songsList'],
   components: {
-    songsListView
+    songsListView,
+    swiperSong: swiper,
+    swiperSlide
   },
   data () {
     return {
       currentActive: 0,
-      songsItemHigh: 300
+      songsItemHigh: 300,
+      swiperOptionSong: {
+        notNextTick: false,
+        loop: true,
+        initialSlide: 0,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true
+        },
+        autoplay: false,
+        navigation: {
+          nextEl: '.songsSlide_slide_next',
+          prevEl: '.songsSlide_slide_prev'
+        }
+      }
+    }
+  },
+  computed: {
+    swiper () {
+      return this.$refs.mySwiper.swiper
     }
   },
   mounted () {
@@ -62,28 +82,7 @@ export default {
   margin-right: -20px;
   z-index: 2;
   position: relative;
-}
-
-.song_list_item{
-  display: flex;
-  flex-direction: row;
-}
-.indicator_wrapper {
-  text-align: center;
-  height: 40px;
-}
-.indicator_item{
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  background-color: rgba(0,0,0,.1);
-  cursor: pointer;
-  margin: 8px;
-}
-.currentActive{
-  background-color: rgba(0,0,0,.3);
+  padding-bottom: 30px;
+  min-height: 300px;
 }
 </style>

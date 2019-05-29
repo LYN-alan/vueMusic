@@ -2,7 +2,7 @@
   <div class="index_video">
     <h2 class="index_h2">MV</h2>
     <SongVideo :videoList="songVideoList" ref="videoList" ></SongVideo>
-    <SlideCommon @prevCarousel="prevCarousel" @nextCarousel="nextCarousel"></SlideCommon>
+    <SlideCommon :slideType="slideType"></SlideCommon>
   </div>
 </template>
 
@@ -17,7 +17,8 @@ export default {
       page: 0,
       pageSize: 40,
       type: 'VIDEO',
-      songVideoList: []
+      songVideoList: [],
+      slideType: 'videoList'
     }
   },
   components: {
@@ -35,17 +36,11 @@ export default {
       }
       getMvRank(option).then(res => {
         console.log(res.data.data)
-        let videoList = res.data.data
+        let videoList = res.data.data.list
         for (let i = 0, len = videoList.length; i < len; i += 10) {
           this.songVideoList.push(videoList.slice(i, i + 10))
         }
       })
-    },
-    prevCarousel () {
-      this.$refs.videoList.$emit('prevCarousel')
-    },
-    nextCarousel () {
-      this.$refs.videoList.$emit('nextCarousel')
     }
   }
 }

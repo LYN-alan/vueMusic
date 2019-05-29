@@ -3,12 +3,13 @@
     <div class="songs_item_wrapper" v-for="(song, key) in songsList" :key="key">
       <div class="songs_item_wrapper_box" ref="songsItemHeight">
         <div class="songs_cover_wrapper">
-          <img @load="imgLoad" ref="imgHeight" class="songs_cover_pic" v-lazy="song.coverImgUrl" :key="song.coverImgUrl" alt="">
+          <img ref="imgHeight" class="songs_cover_pic" :src="song.imgurl" :key="song.imgurl" alt="">
           <i class="songs_cover_mask"></i>
           <i class="songs_cover_icon_paly"></i>
         </div>
-        <h4 class="songs_title">{{song.name}}</h4>
-        <p>播放量：{{formatCount(song.playCount)}}</p>
+        <h4 class="songs_title">{{song.dissname}}</h4>
+        <h4 class="songs_name">{{song.creator.name}}</h4>
+        <p>播放量：{{formatCount(song.listennum)}}</p>
       </div>
   </div>
   </div>
@@ -18,13 +19,6 @@
 export default {
   name: 'songsListView',
   props: ['songsList'],
-  mounted () {
-    window.addEventListener('resize', () => {
-      if (this.$refs.imgHeight[0]) {
-        this.songsItemHigh = this.$refs.imgHeight[0].height + 100
-      }
-    })
-  },
   methods: {
     formatCount (num) {
       if (num > 10000) {
@@ -32,11 +26,6 @@ export default {
       } else {
         return num
       }
-    },
-    imgLoad () {
-      this.$nextTick(() => {
-        this.$emit('songsItemHigh', this.$refs.imgHeight[0].height + 100)
-      })
     }
   }
 }
@@ -46,10 +35,14 @@ export default {
 .songs_list_view{
   width: 100%;
 }
-.songs_title{
+.songs_title,
+.songs_name{
   margin: 5px 0;
   line-height: 1.6;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .songs_title:hover{
   color: #31c27c;

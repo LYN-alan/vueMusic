@@ -5,7 +5,7 @@ import Api from 'axios'
 const ajaxHost = 'https://v1.itooi.cn'
 // 获取歌单分类
 export function getSongsListKinds () {
-  let url = ajaxHost + '/netease/songList/category'
+  let url = ajaxHost + '/tencent/songList/category'
   return Api.get(url, {})
 }
 // 获取热门歌单
@@ -16,7 +16,7 @@ export function getHotSongsList (data) {
     orderType: data.orderType,
     page: data.page
   }
-  let url = ajaxHost + '/netease/songList/hot'
+  let url = ajaxHost + '/tencent/songList/hot'
   return Api.get(url, {params: options})
 }
 // 新歌首发
@@ -31,7 +31,7 @@ export function getNewestDisc () {
 }
 // MV排行获取
 export function getMvRank (data) {
-  let url = ajaxHost + '/netease/mv/top'
+  let url = ajaxHost + '/tencent/mv/hot'
   let options = {
     pageSize: data.pageSize,
     page: data.page
@@ -46,4 +46,9 @@ export function getSingerRank (data) {
     page: data.page
   }
   return Api.get(url, {params: options})
+}
+// 搜索
+export function doSearch (data) {
+  let url = ajaxHost + '/tencent/search'
+  return Api.get(url, {params: data})
 }

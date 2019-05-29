@@ -2,10 +2,10 @@
   <div class="mic_kind">
     <h3 class="h3_kind">全部分类</h3>
     <ul class="mic_kind_type">
-      <li class="mic_kind_type_item" v-for="item in categories" :key="item.category">
-        <h4 class="categories_type">{{item.name}}</h4>
+      <li class="mic_kind_type_item" v-for="item in categories" :key="item.id">
+        <h4 class="categories_type">{{item.categoryGroupName}}</h4>
         <p class="categories_sub">
-          <span :class="currentType === category.name ? 'currentTypeActive':'kindType'" @click="changeKings(category.name)" v-for="(category, index) in  item.SongsListKind" :key="index">{{category.name}}</span>
+          <span :class="currentType === category.categoryName ? 'currentTypeActive':'kindType'" @click="changeKings(category.categoryName)" v-for="(category, index) in  item.items" :key="index">{{category.categoryName}}</span>
         </p>
       </li>
     </ul>
@@ -19,22 +19,33 @@
     <div class="kinds_songs_list">
       <songsListView :songsList="songsList"></songsListView>
     </div>
+    <Pagination
+      :page-index="currentPage"
+      :total="count"
+      :page-size="pageSize"
+      @change="pageChange">
+    </Pagination>
   </div>
 </template>
 
 <script>
+import { Loading } from 'element-ui'
 import songsListView from '@/common/songsListView'
 import {getSongsListKinds, getHotSongsList} from '@/assets/connect/songsList'
+import Pagination from '@/common/pagination'
 export default {
   name: 'kind',
   components: {
+    Pagination,
     songsListView
   },
   data () {
     return {
       categories: [],
-      page: 0,
-      pageSize: 20,
+      currentPage: 1,
+      page: 1,
+      pageSize: 19,
+      count: 0,
       songsList: [],
       isHot: true,
       currentType: '全部'
@@ -46,13 +57,20 @@ export default {
   },
   methods: {
     _getSongsListKinds () {
+      let option = {
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      }
+      Loading.service(option)
       getSongsListKinds().then(res => {
-        console.log(res.data)
-        let categorie = res.data.data.categories
-        for (let item in categorie) {
-          this.categories.push({category: item, name: categorie[item], SongsListKind: this.formatSongsListKind(item, res.data.data.sub)})
-        }
+        this.categories = res.data.data
+        this.categories.shift()
         console.log(this.categories)
+        this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+          Loading.service(option).close()
+        })
       })
     },
     _getHotSongsList (cat, type) {
@@ -62,9 +80,20 @@ export default {
         page: this.page,
         pageSize: this.pageSize
       }
+      let loadingOption = {
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      }
+      Loading.service(loadingOption)
       getHotSongsList(options).then(res => {
         console.log(res.data)
-        this.songsList = res.data.data
+        this.count = res.data.data.sum
+        this.songsList = res.data.data.list
+        this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+          Loading.service(loadingOption).close()
+        })
       })
     },
     formatSongsListKind (type, SongsListKind) {
@@ -91,6 +120,11 @@ export default {
     },
     getAllKingsSongs () {
       this.currentType = '全部'
+      this._getHotSongsList(this.currentType, 'hot')
+    },
+    pageChange (val) {
+      this.page = val
+      this.currentPage = val
       this._getHotSongsList(this.currentType, 'hot')
     }
   }
@@ -190,5 +224,9 @@ export default {
   .currentKinds:hover{
     background-color: #31c27c;
     color: #fff;
+  }
+  .pagination>ul{
+    width: 40px;
+    height: 40px;
   }
 </style>

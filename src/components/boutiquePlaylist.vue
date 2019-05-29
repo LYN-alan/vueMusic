@@ -6,12 +6,13 @@
                    @getSongsList="_getHotSongsList"
                    :songsListKind="songsListKind"></SongsKindList>
     <SongsList :songsList="boutiquePlaylist" ref="songsList"></SongsList>
-    <SlideCommon @prevCarousel="prevCarousel" @nextCarousel="nextCarousel"></SlideCommon>
+    <SlideCommon :slideType="songsList"></SlideCommon>
   </div>
 </template>
 
 <script>
 import SongsList from '@/common/songsList'
+import { Loading } from 'element-ui'
 import SongsKindList from '@/common/songsKind'
 import {getHotSongsList, getSongsListKinds} from '@/assets/connect/songsList'
 import {getRandomArrayElements} from '@/assets/utils/utils'
@@ -27,7 +28,8 @@ export default {
     return {
       boutiquePlaylist: [],
       isHot: true,
-      songsListKind: []
+      songsListKind: [],
+      songsList: 'songsSlide'
     }
   },
   created () {
@@ -41,44 +43,45 @@ export default {
     _getHotSongsList (cat) {
       let param = {
         cat: cat,
-        pageSize: 20,
-        page: 0,
+        pageSize: 19,
+        page: 1,
         orderType: 'hot'
       }
-      this.resetCarouselData()
-      this.boutiquePlaylist = []
+      let option = {
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      }
+      Loading.service(option)
       getHotSongsList(param).then((res) => {
         console.log(res.data)
-        let songsInfo = res.data
-        if (songsInfo.code === 200) {
-          for (let i = 0, len = songsInfo.data.length; i < len; i += 5) {
-            this.boutiquePlaylist.push(songsInfo.data.slice(i, i + 5))
-          }
+        this.boutiquePlaylist = []
+        let songsInfo = res.data.data.list
+        for (let i = 0, len = songsInfo.length; i < len; i += 5) {
+          this.boutiquePlaylist.push(songsInfo.slice(i, i + 5))
         }
+        this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+          Loading.service(option).close()
+        })
       })
-    },
-    prevCarousel () {
-      this.$refs.songsList.$emit('prevCarousel')
-    },
-    nextCarousel () {
-      this.$refs.songsList.$emit('nextCarousel')
-    },
-    resetCarouselData () {
-      this.$refs.songsList.$emit('resetCarouselData')
     },
     _getSongsListKinds () {
       getSongsListKinds().then(res => {
         this.songsListKind.push({type: '全部', name: '为你推荐'})
         let hotKindsList = []
-        res.data.data.sub.forEach(item => {
-          if (item.hot === true) {
+        console.log(res.data)
+        let arr = res.data.data
+        arr.shift()
+        arr.forEach(item => {
+          item.items.forEach(type => {
             hotKindsList.push(
               {
-                type: item.name,
-                name: item.name
+                type: type.categoryName,
+                name: type.categoryName
               }
             )
-          }
+          })
         })
         this.songsListKind = this.songsListKind.concat(getRandomArrayElements(hotKindsList, 5))
       })

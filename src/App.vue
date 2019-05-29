@@ -89,4 +89,15 @@ body{
   transform: scale(1.07) translateZ(0);
   transition: transform .5s;
 }
+.swiper-pagination-bullet-active{
+  background-color: #31c27c!important;
+  outline: none;
+}
+.swiper-pagination{
+  width: 100%;
+}
+.swiper-pagination-bullet{
+  padding: 2px!important;
+  margin: 0 5px;
+}
 </style>

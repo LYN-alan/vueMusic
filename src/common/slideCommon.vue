@@ -1,12 +1,12 @@
 <template>
   <div class="main_slide_wrapper">
     <span class="main_slide_left">
-      <span class="main_slide_left_icon_wrapper main_slide_action_btn" @click="prevCarousel">
+      <span class="main_slide_left_icon_wrapper main_slide_action_btn" :class="slideType + '_slide_prev'">
         <i class="main_slide_left_icon"></i>
       </span>
     </span>
     <span class="main_slide_right">
-      <span class="main_slide_right_icon_wrapper main_slide_action_btn" @click="nextCarousel">
+      <span class="main_slide_right_icon_wrapper main_slide_action_btn" :class="slideType + '_slide_next'">
         <i class="main_slide_right_icon"></i>
       </span>
     </span>
@@ -16,6 +16,7 @@
 <script>
 export default {
   name: 'slideCommon',
+  props: ['slideType'],
   methods: {
     prevCarousel () {
       this.$emit('prevCarousel')
@@ -71,6 +72,7 @@ export default {
     transition-property: opacity,transform;
     transition-duration: .5s;
     z-index: 2;
+    outline: none;
   }
   .main_slide_left_icon,
   .main_slide_right_icon{
