@@ -8,13 +8,18 @@
         <el-button slot="append" icon="el-icon-search" @click="searchValue"></el-button>
       </el-input>
     </div>
+    <searchResult :searchResult="searchResult" :searchType="select"></searchResult>
   </div>
 </template>
 
 <script>
 import {doSearch} from '@/assets/connect/songsList'
+import searchResult from '@/components/searchResult'
 export default {
   name: 'search',
+  components: {
+    searchResult
+  },
   data () {
     return {
       search: '',
@@ -40,13 +45,14 @@ export default {
         },
         {
           name: '视频',
-          key: 'video'
+          key: 'mv'
         },
         {
           name: '歌词',
           key: 'lrc'
         }
-      ]
+      ],
+      searchResult: []
     }
   },
   methods: {
@@ -70,6 +76,11 @@ export default {
       }
       doSearch(params).then(res => {
         console.log(res.data)
+        if (this.select === 'singer') {
+          this.searchResult = res.data.data.song.list
+        } else {
+          this.searchResult = res.data.data.list
+        }
       })
     }
   }
