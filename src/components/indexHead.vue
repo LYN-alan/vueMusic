@@ -23,5 +23,7 @@ export default {
   height: 50px;
   border-bottom: 1px solid #ddd;
   padding: 10px 50px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 </style>

@@ -3,8 +3,8 @@
     <h3 class="h3_title">热门歌手</h3>
     <ul class="singer_list">
       <li v-for="singer in singerList" :key="singer.id" class="singer_item">
-        <img class="singer_cover" v-lazy="singer.picUrl" alt="" :key="singer.picUrl">
-        <span class="singer_name" @click="getSinger(singer.id)">{{singer.name}}</span>
+        <img @click="getSinger(singer.singer_mid, singer.singer_pic)" class="singer_cover" v-lazy="singer.singer_pic" alt="" :key="singer.singer_pic">
+        <span class="singer_name" @click="getSinger(singer.singer_mid, singer.singer_pic)">{{singer.singer_name}}</span>
       </li>
     </ul>
   </div>
@@ -46,8 +46,12 @@ export default {
         })
       })
     },
-    getSinger (id) {
-      console.log(id)
+    getSinger (id, picUrl) {
+      sessionStorage.setItem('singerCover', picUrl)
+      this.$router.push({
+        name: 'SingerDetail',
+        params: {id: id}
+      })
     }
   }
 }

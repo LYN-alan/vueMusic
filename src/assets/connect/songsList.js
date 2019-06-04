@@ -40,7 +40,7 @@ export function getMvRank (data) {
 }
 // 歌手排行榜
 export function getSingerRank (data) {
-  let url = ajaxHost + '/netease/artist/top'
+  let url = ajaxHost + '/tencent/artist/list?sexId=-100&areaId=-100&genre=-100&index=-100&page=0&pageSize=30'
   let options = {
     pageSize: data.pageSize,
     page: data.page
@@ -51,4 +51,14 @@ export function getSingerRank (data) {
 export function doSearch (data) {
   let url = ajaxHost + '/tencent/search'
   return Api.get(url, {params: data})
+}
+// 获取歌单详情
+export function getSongsListDetail (data) {
+  let url = ajaxHost + '/tencent/songList'
+  return Api.get(url, {params: data})
+}
+// 获取歌手信息
+export function getSingerInfo (id) {
+  let url = ajaxHost + '/tencent/artist'
+  return Api.get(url, {params: {id: id}})
 }

@@ -19,13 +19,14 @@
           </span>
         </span>
         <span class="song_res_album" @click="getAlbum(item.albummid)" v-html="item.albumname_hilight"></span>
-        <span>{{formatTime(item.interval)}}</span>
+        <span>{{_formatTime(item.interval)}}</span>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import {formatTime} from '@/assets/utils/utils'
 export default {
   name: 'songSearchResult',
   props: ['resultList'],
@@ -36,23 +37,8 @@ export default {
     getAlbum (id) {
       console.log(id)
     },
-    formatTime (num) {
-      let second = ''
-      let minutes = ''
-      if (num > 60) {
-        second = num % 60
-        second = second > 10 ? second : '0' + second
-        minutes = Math.floor(num / 60)
-        minutes = minutes > 10 ? minutes : '0' + minutes
-      } else {
-        if (num > 10) {
-          second = num
-        } else {
-          second = '0' + num
-        }
-        minutes = '00'
-      }
-      return minutes + ':' + second
+    _formatTime (num) {
+      formatTime(num)
     }
   }
 }

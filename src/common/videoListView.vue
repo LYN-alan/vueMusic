@@ -14,23 +14,21 @@
                   <span class="singer_name" :title="item.name" @click="getSinger(item.id)">{{item.name}}</span>
                 </span>
         </h4>
-        <p><i class="mv_icon_play"></i>{{formatCount(video.playcnt)}}</p>
+        <p><i class="mv_icon_play"></i>{{_formatCount(video.playcnt)}}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {formatCount} from '@/assets/utils/utils'
+
 export default {
   name: 'videoListView',
   props: ['videoList'],
   methods: {
-    formatCount (num) {
-      if (num > 10000) {
-        return (num / 10000).toFixed(2) + '万'
-      } else {
-        return num
-      }
+    _formatCount (num) {
+      return formatCount(num)
     },
     getSinger (id) {
       console.log(id)

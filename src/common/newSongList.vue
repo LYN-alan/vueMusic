@@ -25,25 +25,14 @@
 </template>
 
 <script>
+import {formatTime} from '@/assets/utils/utils'
+
 export default {
   name: 'newSongList',
   props: ['newSongList'],
   methods: {
     formatDuraton (time) {
-      let formatTime = ''
-      if (time > -1) {
-        let min = Math.floor(time / 60 / 1000) % 60
-        let sec = time % 60
-        if (min < 10) {
-          formatTime += '0'
-        }
-        formatTime += min + ':'
-        if (sec < 10) {
-          formatTime += '0'
-        }
-        formatTime += sec
-      }
-      return formatTime
+      return formatTime(time)
     },
     getSinger (id) {
       console.log(id)

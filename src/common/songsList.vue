@@ -44,34 +44,6 @@ export default {
     swiper () {
       return this.$refs.mySwiper.swiper
     }
-  },
-  mounted () {
-    this.$on('nextCarousel', () => {
-      this.nextCarousel()
-    })
-    this.$on('prevCarousel', () => {
-      this.prevCarousel()
-    })
-    this.$on('resetCarouselData', () => {
-      this.currentActive = 0
-    })
-  },
-  methods: {
-    prevCarousel () {
-      this.$refs.carousel.prev()
-      this.currentActive = this.$refs.carousel.activeIndex
-    },
-    nextCarousel () {
-      this.$refs.carousel.next()
-      this.currentActive = this.$refs.carousel.activeIndex
-    },
-    changeCarousel (index) {
-      this.currentActive = index
-      this.$refs.carousel.setActiveItem(index)
-    },
-    updateSongsItemHigh (val) {
-      this.songsItemHigh = val
-    }
   }
 }
 </script>

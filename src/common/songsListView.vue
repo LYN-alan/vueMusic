@@ -4,28 +4,35 @@
       <div class="songs_item_wrapper_box" ref="songsItemHeight">
         <div class="songs_cover_wrapper">
           <img ref="imgHeight" class="songs_cover_pic" :src="song.imgurl" :key="song.imgurl" alt="">
-          <i class="songs_cover_mask"></i>
-          <i class="songs_cover_icon_paly"></i>
+          <i class="songs_cover_mask" @click="getSongListDetail(song.dissid)"></i>
+          <i class="songs_cover_icon_paly" @click="palyAll(song.dissid)"></i>
         </div>
-        <h4 class="songs_title">{{song.dissname}}</h4>
+        <h4 class="songs_title" @click="getSongListDetail(song.dissid)">{{song.dissname}}</h4>
         <h4 class="songs_name">{{song.creator.name}}</h4>
-        <p>播放量：{{formatCount(song.listennum)}}</p>
+        <p>播放量：{{_formatCount(song.listennum)}}</p>
       </div>
   </div>
   </div>
 </template>
 
 <script>
+import {formatCount} from '@/assets/utils/utils'
 export default {
   name: 'songsListView',
   props: ['songsList'],
   methods: {
-    formatCount (num) {
-      if (num > 10000) {
-        return (num / 10000).toFixed(2) + '万'
-      } else {
-        return num
-      }
+    _formatCount (num) {
+      return formatCount(num)
+    },
+    palyAll (id) {
+      console.log(id)
+    },
+    getSongListDetail (id) {
+      console.log(id)
+      this.$router.push({
+        name: 'SongListDetail',
+        params: {id: id}
+      })
     }
   }
 }
