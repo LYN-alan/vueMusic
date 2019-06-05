@@ -29,15 +29,15 @@
             复制歌词
           </el-button>
         </div>
-        <PlayIcon></PlayIcon>
+        <PlayIcon :id="item.songmid"></PlayIcon>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import Clipboard from 'clipboard'
-import PlayIcon from '@/common/playIcon'
+import Clipboard from 'clipboard';
+import PlayIcon from '@/common/playIcon';
 export default {
   name: 'lyricSearchResult',
   props: ['lyricResult'],
@@ -47,53 +47,53 @@ export default {
   data () {
     return {
       unfoldIndex: ''
-    }
+    };
   },
   methods: {
     getAlbumDetail (id) {
-      console.log(id)
+      console.log(id);
     },
     getSinger (id) {
-      console.log(id)
+      console.log(id);
     },
     songerDetail (id) {
-      console.log(id)
+      console.log(id);
     },
     replaceNewline (str) {
-      return str.replace(/\\n/g, '<br/>')
+      return str.replace(/\\n/g, '<br/>');
     },
     lyricUnfold (index) {
-      console.log(this.$refs.iconFold[index].className)
+      console.log(this.$refs.iconFold[index].className);
       if (this.$refs.iconFold[index].className === 'el-icon-plus') {
-        this.$refs.iconFold[index].className = 'el-icon-minus'
-        this.$refs.lyricContent[index].style.height = 'auto'
-        this.$refs.unfold[index].innerHTML = '收起'
+        this.$refs.iconFold[index].className = 'el-icon-minus';
+        this.$refs.lyricContent[index].style.height = 'auto';
+        this.$refs.unfold[index].innerHTML = '收起';
       } else {
-        this.$refs.iconFold[index].className = 'el-icon-plus'
-        this.$refs.lyricContent[index].style.height = '196px'
-        this.$refs.unfold[index].innerHTML = '展开'
+        this.$refs.iconFold[index].className = 'el-icon-plus';
+        this.$refs.lyricContent[index].style.height = '196px';
+        this.$refs.unfold[index].innerHTML = '展开';
       }
     },
     copyLyric () {
-      let clipboard = new Clipboard('.copy_lyric')
+      let clipboard = new Clipboard('.copy_lyric');
       clipboard.on('success', e => {
-        console.log('复制成功')
+        console.log('复制成功');
         this.$message({
           type: 'success',
           message: '复制成功'
-        })
+        });
         // 释放内存
-        clipboard.destroy()
-      })
+        clipboard.destroy();
+      });
       clipboard.on('error', e => {
         // 不支持复制
-        console.log('该浏览器不支持自动复制')
+        console.log('该浏览器不支持自动复制');
         // 释放内存
-        clipboard.destroy()
-      })
+        clipboard.destroy();
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>

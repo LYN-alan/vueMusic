@@ -12,10 +12,10 @@
 </template>
 
 <script>
-import BoutiqueOlaylist from '@/components/boutiquePlaylist'
-import NewSongStart from '@/components/newSongStart'
-import newAlbunFirst from '@/components/newAlbumFirst'
-import songVideo from '@/components/songVideo'
+import BoutiqueOlaylist from '@/components/boutiquePlaylist';
+import NewSongStart from '@/components/newSongStart';
+import newAlbunFirst from '@/components/newAlbumFirst';
+import songVideo from '@/components/songVideo';
 export default {
   name: 'home',
   components: {
@@ -24,7 +24,7 @@ export default {
     newAlbunFirst,
     songVideo
   }
-}
+};
 </script>
 
 <style scoped>

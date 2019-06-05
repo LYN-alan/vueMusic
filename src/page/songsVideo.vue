@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import {getMvRank} from '@/assets/connect/songsList'
-import videoListView from '@/common/videoListView'
-import pagination from '@/common/pagination'
-import { Loading } from 'element-ui'
+import {getMvRank} from '@/assets/connect/songsList';
+import videoListView from '@/common/videoListView';
+import pagination from '@/common/pagination';
+import { Loading } from 'element-ui';
 export default {
   name: 'songVideo',
   components: {
@@ -30,38 +30,38 @@ export default {
       videoList: [],
       currentPage: 1,
       count: 1000
-    }
+    };
   },
   created () {
-    this._getMvRank()
+    this._getMvRank();
   },
   methods: {
     _getMvRank () {
       let options = {
         page: this.page,
         pageSize: this.pageSize
-      }
+      };
       let option = {
         lock: true,
         text: 'Loading',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
-      }
-      Loading.service(option)
+      };
+      Loading.service(option);
       getMvRank(options).then(res => {
-        console.log(res.data)
-        this.videoList = res.data.data.list
+        console.log(res.data);
+        this.videoList = res.data.data.list;
         this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-          Loading.service(option).close()
-        })
-      })
+          Loading.service(option).close();
+        });
+      });
     },
     pageChange (val) {
-      this.page = val
-      this._getMvRank()
+      this.page = val;
+      this._getMvRank();
     }
   }
-}
+};
 </script>
 
 <style scoped>

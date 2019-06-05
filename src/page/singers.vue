@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import {getSingerRank} from '@/assets/connect/songsList'
-import { Loading } from 'element-ui'
+import {getSingerRank} from '@/assets/connect/songsList';
+import { Loading } from 'element-ui';
 export default {
   name: 'singers',
   data () {
@@ -20,41 +20,41 @@ export default {
       page: 0,
       pageSize: 100,
       singerList: []
-    }
+    };
   },
   created () {
-    this._getSingerRank()
+    this._getSingerRank();
   },
   methods: {
     _getSingerRank () {
       let options = {
         page: this.page,
         pageSize: this.pageSize
-      }
+      };
       let option = {
         lock: true,
         text: 'Loading',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
-      }
-      Loading.service(option)
+      };
+      Loading.service(option);
       getSingerRank(options).then(res => {
-        console.log(res.data)
-        this.singerList = res.data.data
+        console.log(res.data);
+        this.singerList = res.data.data;
         this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-          Loading.service(option).close()
-        })
-      })
+          Loading.service(option).close();
+        });
+      });
     },
     getSinger (id, picUrl) {
-      sessionStorage.setItem('singerCover', picUrl)
+      sessionStorage.setItem('singerCover', picUrl);
       this.$router.push({
         name: 'SingerDetail',
         params: {id: id}
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>

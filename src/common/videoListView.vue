@@ -9,10 +9,10 @@
         </div>
         <h4 class="video_title text_elli" :title="video.title">{{video.title}}</h4>
         <h4 class="songs_title text_elli">
-                 <span v-for="(item, index) in video.singers" :key="item.id">
-                  <span v-if="index != 0"> / </span>
-                  <span class="singer_name" :title="item.name" @click="getSinger(item.id)">{{item.name}}</span>
-                </span>
+          <span v-for="(item, index) in video.singers" :key="item.id">
+            <span v-if="index != 0"> / </span>
+            <span class="singer_name" :title="item.name" @click="getSinger(item.id)">{{item.name}}</span>
+          </span>
         </h4>
         <p><i class="mv_icon_play"></i>{{_formatCount(video.playcnt)}}</p>
       </div>
@@ -21,20 +21,19 @@
 </template>
 
 <script>
-import {formatCount} from '@/assets/utils/utils'
-
+import {formatCount} from '@/assets/utils/utils';
 export default {
   name: 'videoListView',
   props: ['videoList'],
   methods: {
     _formatCount (num) {
-      return formatCount(num)
+      return formatCount(num);
     },
     getSinger (id) {
-      console.log(id)
+      console.log(id);
     }
   }
-}
+};
 </script>
 
 <style scoped>

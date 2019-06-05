@@ -16,16 +16,8 @@
 <script>
 export default {
   name: 'slideCommon',
-  props: ['slideType'],
-  methods: {
-    prevCarousel () {
-      this.$emit('prevCarousel')
-    },
-    nextCarousel () {
-      this.$emit('nextCarousel')
-    }
-  }
-}
+  props: ['slideType']
+};
 </script>
 
 <style scoped>

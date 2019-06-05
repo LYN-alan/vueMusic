@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import {getMvRank} from '@/assets/connect/songsList'
-import SongVideo from '@/common/songVideoList'
-import SlideCommon from '@/common/slideCommon'
+import {getMvRank} from '@/assets/connect/songsList';
+import SongVideo from '@/common/songVideoList';
+import SlideCommon from '@/common/slideCommon';
 export default {
   name: 'songVideo',
   data () {
@@ -19,31 +19,31 @@ export default {
       type: 'VIDEO',
       songVideoList: [],
       slideType: 'videoList'
-    }
+    };
   },
   components: {
     SongVideo,
     SlideCommon
   },
   created () {
-    this._getMvRank()
+    this._getMvRank();
   },
   methods: {
     _getMvRank () {
       let option = {
         page: this.page,
         pageSize: this.pageSize
-      }
+      };
       getMvRank(option).then(res => {
-        console.log(res.data.data)
-        let videoList = res.data.data.list
+        console.log(res.data.data);
+        let videoList = res.data.data.list;
         for (let i = 0, len = videoList.length; i < len; i += 10) {
-          this.songVideoList.push(videoList.slice(i, i + 10))
+          this.songVideoList.push(videoList.slice(i, i + 10));
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style>

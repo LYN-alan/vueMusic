@@ -9,7 +9,7 @@
       <div class="song_list_name_box">
         <img class="songs_list_pic" v-lazy="item.imgurl" alt="" :key="item.imgurl">
         <span class="song_list_name" @click="getSongsListDetail(item.dissid)">{{item.dissname}}</span>
-        <PlayIcon></PlayIcon>
+        <PlayIcon :id="item.docid"></PlayIcon>
       </div>
       <span class="item_creator">{{item.creator.name}}</span>
       <span>{{_formatCount(item.listennum)}}</span>
@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import PlayIcon from '@/common/playIcon'
-import {formatCount} from '@/assets/utils/utils'
+import PlayIcon from '@/common/playIcon';
+import {formatCount} from '@/assets/utils/utils';
 
 export default {
   name: 'songsListSearchResult',
@@ -29,13 +29,13 @@ export default {
   },
   methods: {
     _formatCount (num) {
-      formatCount(num)
+      formatCount(num);
     },
     getSongsListDetail (id) {
-      console.log(id)
+      console.log(id);
     }
   }
-}
+};
 </script>
 
 <style scoped>

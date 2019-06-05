@@ -25,20 +25,20 @@
 </template>
 
 <script>
-import {formatTime} from '@/assets/utils/utils'
+import {formatTime} from '@/assets/utils/utils';
 
 export default {
   name: 'newSongList',
   props: ['newSongList'],
   methods: {
     formatDuraton (time) {
-      return formatTime(time)
+      return formatTime(time);
     },
     getSinger (id) {
-      console.log(id)
+      console.log(id);
     }
   }
-}
+};
 </script>
 
 <style scoped>

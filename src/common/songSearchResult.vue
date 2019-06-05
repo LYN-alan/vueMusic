@@ -9,8 +9,11 @@
       </li>
       <li class="song_res_list_item" v-for="item in resultList" :key="item.songmid">
         <span class="song_res_title">
-          <span v-html="item.songname_hilight" class="result_highlight"></span>
-          <span class="result_highlight_lyric">{{item.lyric_hilight}}</span>
+          <span class="song_res_name_wrapper">
+            <span v-html="item.songname_hilight" class="result_highlight"></span>
+            <span class="result_highlight_lyric">{{item.lyric_hilight}}</span>
+          </span>
+          <PlayIcon :id="item.songmid"></PlayIcon>
         </span>
         <span>
           <span v-for="(singer, index) in item.singer" :key="singer.mid">
@@ -26,22 +29,26 @@
 </template>
 
 <script>
-import {formatTime} from '@/assets/utils/utils'
+import {formatTime} from '@/assets/utils/utils';
+import PlayIcon from '@/common/playIcon';
 export default {
   name: 'songSearchResult',
   props: ['resultList'],
+  components: {
+    PlayIcon
+  },
   methods: {
     getSinger (id) {
-      console.log(id)
+      console.log(id);
     },
     getAlbum (id) {
-      console.log(id)
+      console.log(id);
     },
     _formatTime (num) {
-      formatTime(num)
+      formatTime(num);
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -56,6 +63,7 @@ export default {
   position: relative;
   padding-right: 100px;
   line-height: 50px;
+  align-items: center;
 }
 .song_res_list_item>span{
   width: 25%;
@@ -77,6 +85,11 @@ export default {
 .song_res_album{
   cursor: pointer;
 }
+.song_res_title{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 .result_highlight:hover,
 .song_res_singer:hover,
 .song_res_album:hover{
@@ -88,11 +101,26 @@ export default {
 .song_res_list_item:nth-of-type(odd){
   background-color: rgba(0,0,0,.01);
 }
-.result_highlight_lyric{
-  color: #999;
+.song_res_name_wrapper{
   overflow: hidden;
   text-overflow: ellipsis;
   margin-right: 8px;
   white-space: nowrap;
+  max-width: 90%;
+  display: inline-block;
+}
+.result_highlight_lyric{
+  color: #999;
+}
+.song_res_list_item:hover .quick_button_wrapper{
+  display: flex;
+}
+
+.quick_button_wrapper{
+  position: absolute;
+  right: 10px;
+}
+.song_res_list_item:hover .song_res_name_wrapper{
+  width: 70%;
 }
 </style>

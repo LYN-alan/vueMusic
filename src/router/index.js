@@ -1,18 +1,15 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Index from '@/page/home'
-import Singers from '@/page/singers'
-import NewSongs from '@/page/newSongs'
-import Rank from '@/page/rank'
-import Kind from '@/page/kind'
-import songsVideo from '@/page/songsVideo'
-import Search from '@/page/search'
-import SongListDetail from '@/page/songListDetail'
-import SingerDetail from '@/page/singerDetail'
-import hotSongList from '@/components/hotSongList'
-import AlbumList from '@/components/albumList'
-import MvList from '@/components/mvList'
-Vue.use(Router)
+import Vue from 'vue';
+import Router from 'vue-router';
+import Index from '@/page/home';
+import Singers from '@/page/singers';
+import NewSongs from '@/page/newSongs';
+import Rank from '@/page/rank';
+import Kind from '@/page/kind';
+import songsVideo from '@/page/songsVideo';
+import Search from '@/page/search';
+import SongListDetail from '@/page/songListDetail';
+import SingerDetail from '@/page/singerDetail';
+Vue.use(Router);
 
 export default new Router({
   // mode: 'history',
@@ -68,26 +65,8 @@ export default new Router({
     {
       path: '/singerDetail/:id',
       name: 'SingerDetail',
-      redirect: '/singerDetail/hotSongList/:id',
-      component: SingerDetail,
-      children: [
-        {
-          path: '/singerDetail/hotSongList/:id',
-          name: 'hotSongList',
-          component: hotSongList
-        },
-        {
-          path: '/singerDetail/albumList/:id',
-          name: 'AlbumList',
-          component: AlbumList
-        },
-        {
-          path: '/singerDetail/mvList/:id',
-          name: 'MvList',
-          component: MvList
-        }
-      ]
+      component: SingerDetail
     }
 
   ]
-})
+});

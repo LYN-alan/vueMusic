@@ -6,15 +6,15 @@
 </template>
 
 <script>
-import Logo from './logo'
-import indexNav from './headerNav'
+import Logo from './logo';
+import indexNav from './headerNav';
 export default {
   name: 'indexHeader',
   components: {
     Logo,
     indexNav
   }
-}
+};
 </script>
 
 <style scoped>

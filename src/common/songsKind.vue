@@ -16,15 +16,15 @@ export default {
   data () {
     return {
       activeClass: 0
-    }
+    };
   },
   methods: {
     changeSongsKind (type, index) {
-      this.$emit('getSongsList', type)
-      this.activeClass = index
+      this.$emit('getSongsList', type);
+      this.activeClass = index;
     }
   }
-}
+};
 </script>
 
 <style scoped>

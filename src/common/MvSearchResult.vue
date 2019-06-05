@@ -25,10 +25,10 @@ export default {
   props: ['mvResultList'],
   methods: {
     getSinger (id) {
-      console.log(id)
+      console.log(id);
     }
   }
-}
+};
 </script>
 
 <style scoped>

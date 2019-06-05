@@ -19,10 +19,10 @@
 </template>
 
 <script>
-import {doSearch} from '@/assets/connect/songsList'
-import searchResult from '@/components/searchResult'
-import Pagination from '@/common/pagination'
-import {Loading} from 'element-ui'
+import {doSearch} from '@/assets/connect/songsList';
+import searchResult from '@/components/searchResult';
+import Pagination from '@/common/pagination';
+import {Loading} from 'element-ui';
 export default {
   name: 'search',
   components: {
@@ -64,17 +64,17 @@ export default {
       ],
       searchResult: [],
       searchClick: false
-    }
+    };
   },
   methods: {
     searchValue () {
       if (this.search !== '') {
-        this._doSearch()
+        this._doSearch();
       } else {
         this.$message({
           type: 'warning',
           message: '请输入查询内容'
-        })
+        });
       }
     },
     _doSearch () {
@@ -84,45 +84,45 @@ export default {
         pageSize: this.pageSize,
         page: this.page,
         format: 0
-      }
+      };
       let option = {
         lock: true,
         text: 'Loading',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
-      }
-      Loading.service(option)
+      };
+      Loading.service(option);
       doSearch(params).then(res => {
-        console.log(res.data)
-        this.searchClick = true
+        console.log(res.data);
+        this.searchClick = true;
         if (this.select === 'singer') {
-          this.searchResult = res.data.data.song.list
-          this.count = res.data.data.song.totalnum
+          this.searchResult = res.data.data.song.list;
+          this.count = res.data.data.song.totalnum;
         } else if (this.select === 'songList') {
-          this.searchResult = res.data.data.list
-          this.count = res.data.data.sum
+          this.searchResult = res.data.data.list;
+          this.count = res.data.data.sum;
         } else {
-          this.searchResult = res.data.data.list
-          this.count = res.data.data.totalnum
+          this.searchResult = res.data.data.list;
+          this.count = res.data.data.totalnum;
         }
         this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-          Loading.service(option).close()
-        })
-      })
+          Loading.service(option).close();
+        });
+      });
     },
     searchClickChange () {
-      this.searchClick = false
-      this.searchResult.length = 0
+      this.searchClick = false;
+      this.searchResult.length = 0;
       if (this.search !== '') {
-        this._doSearch()
+        this._doSearch();
       }
     },
     pageChange (val) {
-      this.page = val
-      this._doSearch()
+      this.page = val;
+      this._doSearch();
     }
   }
-}
+};
 </script>
 
 <style scoped>

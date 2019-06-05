@@ -1,22 +1,23 @@
 <template>
   <div class="quick_button_wrapper">
-    <i class="icon_play" title="播放" @click="play(item.songmid)"></i>
-    <i class="icon_add" title="添加到播放队列" @click="addPlayList(item.songmid)"></i>
+    <i class="icon_play" title="播放" @click="play"></i>
+    <i class="icon_add" title="添加到播放队列" @click="addPlayList"></i>
   </div>
 </template>
 
 <script>
 export default {
   name: 'playIcon',
+  props: ['id'],
   methods: {
-    play (id) {
-      console.log(id)
+    play () {
+      console.log(this.id);
     },
-    addPlayList (id) {
-      console.log(id)
+    addPlayList () {
+      console.log(this.id);
     }
   }
-}
+};
 </script>
 
 <style scoped>

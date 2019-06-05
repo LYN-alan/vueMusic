@@ -9,11 +9,11 @@
 </template>
 
 <script>
-import songSearchResult from '@/common/songSearchResult'
-import lyricSearchResult from '@/common/lyricSearchResult'
-import songsListSearchResult from '@/common/songsListSearchResult'
-import albumSearchResult from '@/common/albumSearchresult'
-import MvSearchResult from '@/common/MvsearchResult'
+import songSearchResult from '@/common/songSearchResult';
+import lyricSearchResult from '@/common/lyricSearchResult';
+import songsListSearchResult from '@/common/songsListSearchResult';
+import albumSearchResult from '@/common/albumSearchresult';
+import MvSearchResult from '@/common/MvsearchResult';
 export default {
   name: 'searchResult',
   props: ['searchResult', 'searchType', 'searchClick'],
@@ -24,7 +24,7 @@ export default {
     albumSearchResult,
     MvSearchResult
   }
-}
+};
 </script>
 
 <style scoped>

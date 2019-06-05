@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import newSongList from '@/common/newSongList'
-import {getNewestSongs} from '@/assets/connect/songsList'
+import newSongList from '@/common/newSongList';
+import {getNewestSongs} from '@/assets/connect/songsList';
 export default {
   name: 'newSongStart',
   components: {
@@ -16,16 +16,16 @@ export default {
   data () {
     return {
       newSongList: []
-    }
+    };
   },
   created () {
-    this._getNewestSongs()
+    this._getNewestSongs();
   },
   methods: {
     _getNewestSongs () {
       getNewestSongs().then(res => {
-        console.log(res.data.data)
-        let songsList = res.data.data
+        console.log(res.data.data);
+        let songsList = res.data.data;
         if (songsList && songsList.length > 0) {
           songsList.forEach((item) => {
             let songsItem = {
@@ -35,14 +35,14 @@ export default {
               singer: item.song.artists,
               playTime: item.song.duration,
               singerId: item.song.artists[0].id
-            }
-            this.newSongList.push(songsItem)
-          })
+            };
+            this.newSongList.push(songsItem);
+          });
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>

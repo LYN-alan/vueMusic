@@ -29,10 +29,10 @@
 </template>
 
 <script>
-import { Loading } from 'element-ui'
-import songsListView from '@/common/songsListView'
-import {getSongsListKinds, getHotSongsList} from '@/assets/connect/songsList'
-import Pagination from '@/common/pagination'
+import { Loading } from 'element-ui';
+import songsListView from '@/common/songsListView';
+import {getSongsListKinds, getHotSongsList} from '@/assets/connect/songsList';
+import Pagination from '@/common/pagination';
 export default {
   name: 'kind',
   components: {
@@ -49,11 +49,11 @@ export default {
       songsList: [],
       isHot: true,
       currentType: '全部'
-    }
+    };
   },
   created () {
-    this._getSongsListKinds()
-    this._getHotSongsList(this.currentType, 'hot')
+    this._getSongsListKinds();
+    this._getHotSongsList(this.currentType, 'hot');
   },
   methods: {
     _getSongsListKinds () {
@@ -62,16 +62,16 @@ export default {
         text: 'Loading',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
-      }
-      Loading.service(option)
+      };
+      Loading.service(option);
       getSongsListKinds().then(res => {
-        this.categories = res.data.data
-        this.categories.shift()
-        console.log(this.categories)
+        this.categories = res.data.data;
+        this.categories.shift();
+        console.log(this.categories);
         this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-          Loading.service(option).close()
-        })
-      })
+          Loading.service(option).close();
+        });
+      });
     },
     _getHotSongsList (cat, type) {
       let options = {
@@ -79,56 +79,56 @@ export default {
         orderType: type,
         page: this.page,
         pageSize: this.pageSize
-      }
+      };
       let loadingOption = {
         lock: true,
         text: 'Loading',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
-      }
-      Loading.service(loadingOption)
+      };
+      Loading.service(loadingOption);
       getHotSongsList(options).then(res => {
-        console.log(res.data)
-        this.count = res.data.data.sum
-        this.songsList = res.data.data.list
+        console.log(res.data);
+        this.count = res.data.data.sum;
+        this.songsList = res.data.data.list;
         this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-          Loading.service(loadingOption).close()
-        })
-      })
+          Loading.service(loadingOption).close();
+        });
+      });
     },
     formatSongsListKind (type, SongsListKind) {
-      let KindList = []
-      if (!SongsListKind) return
+      let KindList = [];
+      if (!SongsListKind) return;
       SongsListKind.forEach(item => {
         if (Number(type) === item.category) {
-          KindList.push({name: item.name})
+          KindList.push({name: item.name});
         }
-      })
-      return KindList
+      });
+      return KindList;
     },
     changeHotType () {
-      this.isHot = true
-      this._getHotSongsList(this.currentType, 'hot')
+      this.isHot = true;
+      this._getHotSongsList(this.currentType, 'hot');
     },
     changeNewType () {
-      this.isHot = false
-      this._getHotSongsList(this.currentType, 'new')
+      this.isHot = false;
+      this._getHotSongsList(this.currentType, 'new');
     },
     changeKings (type) {
-      this.currentType = type
-      this._getHotSongsList(this.currentType, 'hot')
+      this.currentType = type;
+      this._getHotSongsList(this.currentType, 'hot');
     },
     getAllKingsSongs () {
-      this.currentType = '全部'
-      this._getHotSongsList(this.currentType, 'hot')
+      this.currentType = '全部';
+      this._getHotSongsList(this.currentType, 'hot');
     },
     pageChange (val) {
-      this.page = val
-      this.currentPage = val
-      this._getHotSongsList(this.currentType, 'hot')
+      this.page = val;
+      this.currentPage = val;
+      this._getHotSongsList(this.currentType, 'hot');
     }
   }
-}
+};
 </script>
 
 <style scoped>

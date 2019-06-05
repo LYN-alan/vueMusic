@@ -29,7 +29,7 @@
           <span>{{index + 1}}</span>
           <div class="song_item_title">
             <span class="song_item_title_text" :title="item.name">{{item.name}}</span>
-            <PlayIcon></PlayIcon>
+            <PlayIcon :id="item.id"></PlayIcon>
           </div>
           <span>
             <span v-for="(name, key) in item.singer" :key="key">
@@ -50,10 +50,10 @@
 </template>
 
 <script>
-import {getSongsListDetail} from '@/assets/connect/songsList'
-import {Loading} from 'element-ui'
-import PlayIcon from '@/common/playIcon'
-import {formatCount, formatTime} from '@/assets/utils/utils'
+import {getSongsListDetail} from '@/assets/connect/songsList';
+import {Loading} from 'element-ui';
+import PlayIcon from '@/common/playIcon';
+import {formatCount, formatTime} from '@/assets/utils/utils';
 export default {
   name: 'songListDetail',
   components: {
@@ -62,43 +62,43 @@ export default {
   data () {
     return {
       songListData: {}
-    }
+    };
   },
   created () {
-    let songListId = this.$route.params.id
-    console.log(songListId)
-    console.log(this.songListData)
-    this.initSongListDetail(songListId)
+    let songListId = this.$route.params.id;
+    console.log(songListId);
+    console.log(this.songListData);
+    this.initSongListDetail(songListId);
   },
   methods: {
     initSongListDetail (id) {
       let options = {
         id: id,
         format: 0
-      }
+      };
       let loadOptions = {
         lock: true,
         text: 'Loading',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
-      }
-      Loading.service(loadOptions)
+      };
+      Loading.service(loadOptions);
       getSongsListDetail(options).then(res => {
-        console.log(res.data)
-        this.songListData = res.data.data[0]
+        console.log(res.data);
+        this.songListData = res.data.data[0];
         this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-          Loading.service(loadOptions).close()
-        })
-      })
+          Loading.service(loadOptions).close();
+        });
+      });
     },
     _formatCount (num) {
-      return formatCount(num)
+      return formatCount(num);
     },
     _formatTime (num) {
-      return formatTime(num)
+      return formatTime(num);
     }
   }
-}
+};
 </script>
 
 <style scoped>

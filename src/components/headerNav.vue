@@ -16,9 +16,9 @@ export default {
         {path: '/video', name: 'MV'},
         {path: '/search', name: '搜索'}
       ]
-    }
+    };
   }
-}
+};
 </script>
 
 <style scoped>

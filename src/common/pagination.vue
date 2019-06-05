@@ -58,85 +58,85 @@ export default {
       size: this.total || 1, // 总记录数
       showPrevMore: false,
       showNextMore: false
-    }
+    };
   },
   methods: {
     prev () {
       if (this.index > 1) {
-        this.go(this.index - 1)
+        this.go(this.index - 1);
       }
     },
     next () {
       if (this.index < this.pages) {
-        this.go(this.index + 1)
+        this.go(this.index + 1);
       }
     },
     first () {
       if (this.index !== 1) {
-        this.go(1)
+        this.go(1);
       }
     },
     last () {
       if (this.index !== this.pages) {
-        this.go(this.pages)
+        this.go(this.pages);
       }
     },
     go (page) {
       if (this.index !== page) {
-        this.index = page
+        this.index = page;
         // 父组件通过change方法来接受当前的页码
-        this.$emit('change', this.index)
+        this.$emit('change', this.index);
       }
     }
   },
   computed: {
     // 计算总页码
     pages () {
-      return Math.ceil(this.size / this.limit)
+      return Math.ceil(this.size / this.limit);
     },
 
     // 计算页码，当count等变化时自动计算
     pagers () {
-      let self = this
-      const array = []
-      const perPages = this.perPages
-      const pageCount = this.pages
-      let current = this.index
-      const _offset = (perPages - 1) / 2
+      let self = this;
+      const array = [];
+      const perPages = this.perPages;
+      const pageCount = this.pages;
+      let current = this.index;
+      const _offset = (perPages - 1) / 2;
       const offset = {
         start: current - _offset,
         end: current + _offset
-      }
+      };
       // -1, 3
       if (offset.start < 1) {
-        offset.end = offset.end + (1 - offset.start)
-        offset.start = 1
+        offset.end = offset.end + (1 - offset.start);
+        offset.start = 1;
       }
       if (offset.end > pageCount) {
-        offset.start = offset.start - (offset.end - pageCount)
-        offset.end = pageCount
+        offset.start = offset.start - (offset.end - pageCount);
+        offset.end = pageCount;
       }
-      if (offset.start < 1) offset.start = 1
-      self.showPrevMore = (offset.start > 1)
-      self.showNextMore = (offset.end < pageCount)
+      if (offset.start < 1) offset.start = 1;
+      self.showPrevMore = (offset.start > 1);
+      self.showNextMore = (offset.end < pageCount);
       for (let i = offset.start; i <= offset.end; i++) {
-        array.push(i)
+        array.push(i);
       }
-      return array
+      return array;
     }
   },
   watch: {
     pageIndex (val) {
-      this.index = val || 1
+      this.index = val || 1;
     },
     pageSize (val) {
-      this.limit = val || 10
+      this.limit = val || 10;
     },
     total (val) {
-      this.size = val || 1
+      this.size = val || 1;
     }
   }
-}
+};
 </script>
 
 <style scoped>

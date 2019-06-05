@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import videoListView from '@/common/videoListView'
-import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import videoListView from '@/common/videoListView';
+import { swiper, swiperSlide } from 'vue-awesome-swiper';
 export default {
   name: 'songVideoList',
   props: ['videoList'],
@@ -36,9 +36,9 @@ export default {
           prevEl: '.videoList_slide_prev'
         }
       }
-    }
+    };
   }
-}
+};
 </script>
 
 <style scoped>

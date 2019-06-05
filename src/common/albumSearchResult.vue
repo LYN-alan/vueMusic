@@ -9,7 +9,7 @@
       <div class="album_info">
         <img class="album_cover" v-lazy="item.albumPic" alt="" :key="item.albumPic">
         <span class="album_title" v-html="item.albumName_hilight"></span>
-        <PlayIcon></PlayIcon>
+        <PlayIcon :id="item.albumID"></PlayIcon>
       </div>
       <div class="album_singer">
         <span v-html="item.singerName_hilight"></span>
@@ -22,14 +22,14 @@
 </template>
 
 <script>
-import PlayIcon from '@/common/playIcon'
+import PlayIcon from '@/common/playIcon';
 export default {
   name: 'albumSearchResult',
   props: ['albumList'],
   components: {
     PlayIcon
   }
-}
+};
 </script>
 
 <style scoped>

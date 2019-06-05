@@ -11,13 +11,13 @@
 </template>
 
 <script>
-import indexHead from '@/components/indexHead'
+import indexHead from '@/components/indexHead';
 export default {
   name: 'Index',
   components: {
     indexHead
   }
-}
+};
 </script>
 
 <style scoped>

@@ -11,12 +11,12 @@
 </template>
 
 <script>
-import SongsList from '@/common/songsList'
-import { Loading } from 'element-ui'
-import SongsKindList from '@/common/songsKind'
-import {getHotSongsList, getSongsListKinds} from '@/assets/connect/songsList'
-import {getRandomArrayElements} from '@/assets/utils/utils'
-import SlideCommon from '@/common/slideCommon'
+import SongsList from '@/common/songsList';
+import { Loading } from 'element-ui';
+import SongsKindList from '@/common/songsKind';
+import {getHotSongsList, getSongsListKinds} from '@/assets/connect/songsList';
+import {getRandomArrayElements} from '@/assets/utils/utils';
+import SlideCommon from '@/common/slideCommon';
 export default {
   name: 'boutiquePlaylist',
   components: {
@@ -30,14 +30,14 @@ export default {
       isHot: true,
       songsListKind: [],
       songsList: 'songsSlide'
-    }
+    };
   },
   created () {
 
   },
   mounted () {
-    this._getHotSongsList('全部')
-    this._getSongsListKinds()
+    this._getHotSongsList('全部');
+    this._getSongsListKinds();
   },
   methods: {
     _getHotSongsList (cat) {
@@ -46,33 +46,33 @@ export default {
         pageSize: 19,
         page: 1,
         orderType: 'hot'
-      }
+      };
       let option = {
         lock: true,
         text: 'Loading',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
-      }
-      Loading.service(option)
+      };
+      Loading.service(option);
       getHotSongsList(param).then((res) => {
-        console.log(res.data)
-        this.boutiquePlaylist = []
-        let songsInfo = res.data.data.list
+        console.log(res.data);
+        this.boutiquePlaylist = [];
+        let songsInfo = res.data.data.list;
         for (let i = 0, len = songsInfo.length; i < len; i += 5) {
-          this.boutiquePlaylist.push(songsInfo.slice(i, i + 5))
+          this.boutiquePlaylist.push(songsInfo.slice(i, i + 5));
         }
         this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-          Loading.service(option).close()
-        })
-      })
+          Loading.service(option).close();
+        });
+      });
     },
     _getSongsListKinds () {
       getSongsListKinds().then(res => {
-        this.songsListKind.push({type: '全部', name: '为你推荐'})
-        let hotKindsList = []
-        console.log(res.data)
-        let arr = res.data.data
-        arr.shift()
+        this.songsListKind.push({type: '全部', name: '为你推荐'});
+        let hotKindsList = [];
+        console.log(res.data);
+        let arr = res.data.data;
+        arr.shift();
         arr.forEach(item => {
           item.items.forEach(type => {
             hotKindsList.push(
@@ -80,14 +80,14 @@ export default {
                 type: type.categoryName,
                 name: type.categoryName
               }
-            )
-          })
-        })
-        this.songsListKind = this.songsListKind.concat(getRandomArrayElements(hotKindsList, 5))
-      })
+            );
+          });
+        });
+        this.songsListKind = this.songsListKind.concat(getRandomArrayElements(hotKindsList, 5));
+      });
     }
   }
-}
+};
 </script>
 
 <style>

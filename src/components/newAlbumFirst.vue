@@ -23,22 +23,22 @@
 </template>
 
 <script>
-import {getNewestDisc} from '@/assets/connect/songsList'
+import {getNewestDisc} from '@/assets/connect/songsList';
 export default {
   name: 'newAlbumFirst',
   data () {
     return {
       newAlbumFirstList: []
-    }
+    };
   },
   created () {
-    this._getNewestDisc()
+    this._getNewestDisc();
   },
   methods: {
     _getNewestDisc () {
       getNewestDisc().then(res => {
-        console.log(res.data.data)
-        let songsList = res.data.data
+        console.log(res.data.data);
+        let songsList = res.data.data;
         if (songsList && songsList.length > 0) {
           songsList.forEach((item) => {
             let songsItem = {
@@ -46,20 +46,17 @@ export default {
               name: item.name,
               coverImgUrl: item.picUrl,
               singer: item.artists
-            }
-            this.newAlbumFirstList.push(songsItem)
-          })
+            };
+            this.newAlbumFirstList.push(songsItem);
+          });
         }
-      })
-    },
-    imgLoad () {
-      console.log(1)
+      });
     },
     getSinger (id) {
-      console.log(id)
+      console.log(id);
     }
   }
-}
+};
 </script>
 
 <style scoped>

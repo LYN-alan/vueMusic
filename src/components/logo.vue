@@ -10,10 +10,10 @@ export default {
   name: 'logo',
   methods: {
     refresh () {
-      console.log(1)
+      console.log(1);
     }
   }
-}
+};
 </script>
 
 <style scoped>

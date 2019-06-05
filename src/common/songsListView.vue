@@ -16,26 +16,26 @@
 </template>
 
 <script>
-import {formatCount} from '@/assets/utils/utils'
+import {formatCount} from '@/assets/utils/utils';
 export default {
   name: 'songsListView',
   props: ['songsList'],
   methods: {
     _formatCount (num) {
-      return formatCount(num)
+      return formatCount(num);
     },
     palyAll (id) {
-      console.log(id)
+      console.log(id);
     },
     getSongListDetail (id) {
-      console.log(id)
+      console.log(id);
       this.$router.push({
         name: 'SongListDetail',
         params: {id: id}
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>

@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import { swiper, swiperSlide } from 'vue-awesome-swiper'
-import songsListView from '@/common/songsListView'
+import { swiper, swiperSlide } from 'vue-awesome-swiper';
+import songsListView from '@/common/songsListView';
 export default {
   name: 'songsList',
   props: ['songsList'],
@@ -38,14 +38,14 @@ export default {
           prevEl: '.songsSlide_slide_prev'
         }
       }
-    }
+    };
   },
   computed: {
     swiper () {
-      return this.$refs.mySwiper.swiper
+      return this.$refs.mySwiper.swiper;
     }
   }
-}
+};
 </script>
 
 <style scoped>

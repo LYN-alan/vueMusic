@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import Index from '@/page/index'
+import Index from '@/page/index';
 export default {
   name: 'App',
   components: {
     Index
   }
-}
+};
 </script>
 
 <style>
@@ -34,6 +34,20 @@ body{
   padding-bottom: 2%;
   font-size: 200%;
   letter-spacing: 10px;
+}
+.swiper-pagination-bullet-active{
+  background-color: #31c27c!important;
+  outline: none;
+}
+.swiper-pagination{
+  width: 100%;
+}
+.swiper-pagination-bullet{
+  padding: 2px!important;
+  margin: 0 5px;
+}
+em{
+  color: #31c27c;
 }
 .songs_cover_wrapper{
   margin-bottom: 15px;
@@ -88,19 +102,5 @@ body{
 .songs_cover_wrapper:hover .songs_cover_icon_paly {
   transform: scale(1.07) translateZ(0);
   transition: transform .5s;
-}
-.swiper-pagination-bullet-active{
-  background-color: #31c27c!important;
-  outline: none;
-}
-.swiper-pagination{
-  width: 100%;
-}
-.swiper-pagination-bullet{
-  padding: 2px!important;
-  margin: 0 5px;
-}
-em{
-  color: #31c27c;
 }
 </style>
