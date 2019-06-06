@@ -25,6 +25,7 @@ module.exports = {
     'generator-star-spacing': 'off',
     "quotes": [1, "single"], //引号类型 `` "" '
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'semi': ['error', 'always'] // 强制有分号，没有就报错
   }
 }

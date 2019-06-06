@@ -4,19 +4,27 @@
     <BoutiqueOlaylist></BoutiqueOlaylist>
     <!--    新歌首发-->
     <NewSongStart></NewSongStart>
+    <!--    新碟首发-->
+    <newAlbunFirst></newAlbunFirst>
+    <!--    MV-->
+    <songVideo></songVideo>
   </div>
 </template>
 
 <script>
-import BoutiqueOlaylist from '@/components/boutiquePlaylist'
-import NewSongStart from '@/components/newSongStart'
+import BoutiqueOlaylist from '@/components/boutiquePlaylist';
+import NewSongStart from '@/components/newSongStart';
+import newAlbunFirst from '@/components/newAlbumFirst';
+import songVideo from '@/components/songVideo';
 export default {
   name: 'home',
   components: {
     BoutiqueOlaylist,
-    NewSongStart
+    NewSongStart,
+    newAlbunFirst,
+    songVideo
   }
-}
+};
 </script>
 
 <style scoped>

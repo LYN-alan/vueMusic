@@ -12,15 +12,13 @@ export default {
       navList: [
         {path: '/index', name: '首页'},
         {path: '/singers', name: '歌手'},
-        {path: '/newSongs', name: '新碟'},
-        {path: '/rank', name: '排行榜'},
         {path: '/kind', name: '分类歌单'},
         {path: '/video', name: 'MV'},
         {path: '/search', name: '搜索'}
       ]
-    }
+    };
   }
-}
+};
 </script>
 
 <style scoped>

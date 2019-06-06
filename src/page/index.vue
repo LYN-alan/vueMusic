@@ -4,18 +4,20 @@
     <section class="index_main">
       <router-view></router-view>
     </section>
-    <footer class="index_footer">底部</footer>
+    <footer class="index_footer">
+      <p>'音为有你'，一切美好开始、、、</p>
+    </footer>
   </div>
 </template>
 
 <script>
-import indexHead from '@/components/indexHead'
+import indexHead from '@/components/indexHead';
 export default {
   name: 'Index',
   components: {
     indexHead
   }
-}
+};
 </script>
 
 <style scoped>
@@ -24,11 +26,13 @@ export default {
   padding: 0 50px;
 }
 .index_main{
-  min-height: 500px;
+  min-height: 600px;
   background-color: #ddd;
 }
 .index_footer{
   background-color: #000;
   color: #fff;
+  padding: 50px;
+  text-align: center;
 }
 </style>

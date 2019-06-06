@@ -1,14 +1,15 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Index from '@/page/home'
-import Singers from '@/page/singers'
-import NewSongs from '@/page/newSongs'
-import Rank from '@/page/rank'
-import Kind from '@/page/kind'
-import Video from '@/page/video'
-import Search from '@/page/search'
-
-Vue.use(Router)
+import Vue from 'vue';
+import Router from 'vue-router';
+import Index from '@/page/home';
+import Singers from '@/page/singers';
+import NewSongs from '@/page/newSongs';
+import Rank from '@/page/rank';
+import Kind from '@/page/kind';
+import songsVideo from '@/page/songsVideo';
+import Search from '@/page/search';
+import SongListDetail from '@/page/songListDetail';
+import SingerDetail from '@/page/singerDetail';
+Vue.use(Router);
 
 export default new Router({
   // mode: 'history',
@@ -49,13 +50,23 @@ export default new Router({
     {
       path: '/video',
       name: 'video',
-      component: Video
+      component: songsVideo
     },
     {
       path: '/search',
       name: 'search',
       component: Search
+    },
+    {
+      path: '/songListDetail/:id',
+      name: 'SongListDetail',
+      component: SongListDetail
+    },
+    {
+      path: '/singerDetail/:id',
+      name: 'SingerDetail',
+      component: SingerDetail
     }
 
   ]
-})
+});
