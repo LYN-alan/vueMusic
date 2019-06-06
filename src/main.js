@@ -9,6 +9,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import '@/assets/CSS/reset.css';
 import 'swiper/dist/css/swiper.css';
 import VueAwesomeSwiper from 'vue-awesome-swiper';
+import store from '@/store/index';
 Vue.use(VueAwesomeSwiper);
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
@@ -20,6 +21,7 @@ Vue.use(VueLazyLoad, {
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 });
