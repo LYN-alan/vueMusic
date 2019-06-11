@@ -6,16 +6,20 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default {
   name: 'playIcon',
   props: ['id'],
   methods: {
     play () {
       console.log(this.id);
+      this.playCurrentSong(this.id);
     },
     addPlayList () {
       console.log(this.id);
-    }
+      this.inserSong(this.id);
+    },
+    ...mapActions(['playCurrentSong', 'inserSong'])
   }
 };
 </script>
