@@ -30,9 +30,16 @@ export default {
   },
   watch: {
     currentSongTime () {
-      this.currentTime = this.currentSongTime;
-      this.currentPercentage = (this.currentSongTime / this.songDuration) * 100;
-      this.$refs.iconProgress.style.left = `calc(${this.currentPercentage}% - 6px)`;
+      this.$nextTick(() => {
+        this.currentTime = this.currentSongTime;
+        if (Number(this.currentSongTime) === 0) {
+          this.currentPercentage = 0;
+        } else if (Number(this.currentSongTime) !== 0 && Number(this.songDuration) !== 0) {
+          let currentPer = (this.currentSongTime / this.songDuration) * 100;
+          this.currentPercentage = currentPer > 100 ? 100 : currentPer;
+        }
+        this.$refs.iconProgress.style.left = `calc(${this.currentPercentage}% - 6px)`;
+      });
     }
   },
   methods: {

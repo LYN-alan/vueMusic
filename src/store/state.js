@@ -1,7 +1,7 @@
 const state = {
   playing: false,
   playList: [],
-  currentIndex: 0
+  currentIndex: ''
 };
 
 export default state;

@@ -12,14 +12,12 @@ export default {
   props: ['id'],
   methods: {
     play () {
-      console.log(this.id);
       this.playCurrentSong(this.id);
     },
     addPlayList () {
-      console.log(this.id);
-      this.inserSong(this.id);
+      this.insertSong(this.id);
     },
-    ...mapActions(['playCurrentSong', 'inserSong'])
+    ...mapActions(['playCurrentSong', 'insertSong'])
   }
 };
 </script>

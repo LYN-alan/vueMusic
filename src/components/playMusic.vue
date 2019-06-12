@@ -19,7 +19,7 @@
         <span class="icon_next_control icon_next" title="下一首" @click="nextSong"></span>
       </div>
       <div class="player_song_info">
-        <img v-lazy="currentSongCover" alt="">
+        <img v-lazy="currentSongCover" alt="" :key="currentSongCover">
         <div class="player_progress_wrapper">
           <p class="player_song_info_box">
             <span class="player_song_title">{{currentSongTitle}}</span>
@@ -39,6 +39,7 @@
         </span>
         <span class="icon_playList">
           <i class="icon_play_list" title="播放列表"></i>
+          <span class="player_list_num">{{playList.length}}</span>
         </span>
       </div>
     </div>
@@ -46,7 +47,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import PlayProgress from '@/components/playProgress';
 import {getSongDetail} from '@/assets/connect/songsList';
 
@@ -72,19 +73,22 @@ export default {
     ...mapGetters(['playList', 'playing', 'currentIndex'])
   },
   mounted () {
-    console.log(this.playList, this.playing);
+    this.watchMusicEnded();
   },
   watch: {
     playList () {
-      console.log(this.playList);
       this.songUrl();
-      let songId = this.playList[this.currentIndex];
-      this._getSongDetail(songId);
+    },
+    currentIndex () {
+      this.songUrl();
     },
     songSrc (src) {
       if (src !== '') {
+        let songId = this.playList[this.currentIndex];
         this.$nextTick(() => {
           this.$refs.playControl.play();
+          this._getSongDetail(songId);
+          this.currentSongCover = `https://v1.itooi.cn/tencent/pic?id=${songId}&isRedirect=1`;
           this.watchMusicTime();
         });
       }
@@ -98,29 +102,45 @@ export default {
       if (this.playing) {
         let songId = this.playList[this.currentIndex];
         this.songSrc = `https://v1.itooi.cn/tencent/url?id=${songId}&quality=128&isRedirect=1`;
-        this.currentSongCover = `https://v1.itooi.cn/tencent/pic?id=${songId}&isRedirect=1`;
       }
     },
     _getSongDetail (id) {
       getSongDetail(id).then(res => {
-        console.log(res.data);
-        this.songDuration = res.data.data[0].interval;
-        this.currentSongSinger = res.data.data[0].singer;
-        this.currentSongTitle = res.data.data[0].title;
+        this.$nextTick(() => {
+          this.songDuration = res.data.data[0].interval;
+          this.currentSongSinger = res.data.data[0].singer;
+          this.currentSongTitle = res.data.data[0].title;
+        });
       });
     },
-    format () {
-      return this.percentage === 100 ? '满' : `${this.percentage}%`;
-    },
     prevSong () {
-      console.log('prev');
+      let index = this.currentIndex;
+      if (this.playType === 2) {
+        index = this.randomIndex(0, this.playList.length - 1);
+      } else if (this.playType === 0) {
+        index--;
+      }
+      this.changeNextSong(index);
     },
     nextSong () {
-      console.log('next');
+      let index = this.currentIndex;
+      if (this.playType === 2) {
+        index = this.randomIndex(0, this.playList.length - 1);
+      } else if (this.playType === 0) {
+        index++;
+      }
+      this.changeNextSong(index);
     },
     pausedBtn () {
-      console.log('play');
+      let musicDom = this.$refs.playControl;
+      this.changePlayingState();
+      if (musicDom.paused) {
+        musicDom.play();
+      } else {
+        musicDom.pause();
+      }
     },
+    // 切换播放顺序
     changePlayType () {
       this.playType++;
       if (this.playType === 3) {
@@ -138,9 +158,37 @@ export default {
         _this.currentSongTime = Math.floor(musicDom.currentTime);// 获取实时时间
       }, false);
     },
+    watchMusicEnded () {
+      let musicDom = this.$refs.playControl;
+      musicDom.addEventListener('ended', () => {
+        console.log('ended');
+        let index = this.currentIndex;
+        if (this.playType === 2) {
+          index = this.randomIndex(index, this.playList.length - 1);
+        } else if (this.playType === 0) {
+          index++;
+        }
+        if (this.playType === 1) {
+          this.$refs.playControl.play();
+        } else {
+          this.changeNextSong(index);
+        }
+      }, false);
+    },
     newCurrentTime (newTime) {
       this.$refs.playControl.currentTime = newTime;
-    }
+    },
+    randomIndex (Min, Max) {
+      let Range = Max - Min;
+      let Rand = Math.random();
+      let num = Min + Math.round(Rand * Range); // 四舍五入
+      return num;
+    },
+    ...mapActions([
+      'changeNextSong',
+      'changePrevSong',
+      'changePlayingState'
+    ])
   }
 };
 </script>
@@ -236,5 +284,17 @@ export default {
   width: 100px;
   display: flex;
   justify-content: space-between;
+}
+.icon_playList{
+  position: relative;
+  width: 70px;
+}
+.player_list_num{
+  color: #fff;
+  position: absolute;
+  font-size: 12px;
+  bottom: 2px;
+  right: 5px;
+  width: 20px;
 }
 </style>

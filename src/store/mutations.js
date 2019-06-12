@@ -4,7 +4,9 @@ const mutations = {
     state.playList = list;
   },
   [type.INSERT_SONG] (state, songId) {
-    state.playList.push(songId);
+    if (state.playList.indexOf(songId) === -1) {
+      state.playList.push(songId);
+    }
   },
   [type.SET_PLAYING_STATE] (state, playing) {
     state.playing = playing;
