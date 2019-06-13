@@ -35,4 +35,7 @@ export default {
   padding: 50px;
   text-align: center;
 }
+.index{
+  padding-bottom: 80px;
+}
 </style>

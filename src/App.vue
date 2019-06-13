@@ -1,15 +1,18 @@
 <template>
   <div id="app">
     <Index></Index>
+    <Player></Player>
   </div>
 </template>
 
 <script>
 import Index from '@/page/index';
+import Player from '@/components/playMusic';
 export default {
   name: 'App',
   components: {
-    Index
+    Index,
+    Player
   }
 };
 </script>
@@ -25,7 +28,7 @@ h2{
   margin: 0;
   text-align: center;
 }
-body{
+html,body{
   min-width: 1024px;
   color: #000;
 }
