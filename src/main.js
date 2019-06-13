@@ -10,6 +10,9 @@ import '@/assets/CSS/reset.css';
 import 'swiper/dist/css/swiper.css';
 import VueAwesomeSwiper from 'vue-awesome-swiper';
 import store from '@/store/index';
+import VueScrollLock from 'vue-scroll-lock';
+
+Vue.use(VueScrollLock);
 Vue.use(VueAwesomeSwiper);
 Vue.config.productionTip = false;
 Vue.use(ElementUI);

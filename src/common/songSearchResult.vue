@@ -7,7 +7,7 @@
         <span>专辑</span>
         <span>时长</span>
       </li>
-      <li class="song_res_list_item" v-for="item in resultList" :key="item.songmid">
+      <li class="song_res_list_item" v-for="(item, index) in resultList" :key="index">
         <span class="song_res_title">
           <span class="song_res_name_wrapper">
             <span v-html="item.songname_hilight" class="result_highlight"></span>

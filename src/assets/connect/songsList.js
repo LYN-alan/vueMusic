@@ -64,3 +64,7 @@ export function getSingerMv (data) {
 export function getSongDetail (id) {
   return Api.get('/api/tencent/song', {params: {id: id}});
 }
+// 获取歌曲歌词
+export function getSongLrc (id) {
+  return Api.get('/api/tencent/lrc', {params: {id: id}});
+}

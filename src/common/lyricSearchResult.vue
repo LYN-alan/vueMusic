@@ -64,7 +64,7 @@ export default {
     },
     lyricUnfold (index) {
       console.log(this.$refs.iconFold[index].className);
-      if (this.$refs.iconFold[index].className === 'el-icon-plus') {
+      if (this.$refs.iconFold[index].className.indexOf('el-icon-plus') !== -1) {
         this.$refs.iconFold[index].className = 'el-icon-minus';
         this.$refs.lyricContent[index].style.height = 'auto';
         this.$refs.unfold[index].innerHTML = '收起';

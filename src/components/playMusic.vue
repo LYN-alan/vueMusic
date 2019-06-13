@@ -1,18 +1,46 @@
 <template>
   <div class="player_wrapper">
-    <div class="player_larger" v-show="!playMini">
+    <div class="player_larger" v-show="showPlayerLarge">
       <!--    播放列表-->
       <div class="player_songs_list">
-        <p>player_large</p>
+        <div class="player_song_list_wrapper">
+          <p class="player_list_title">
+            <span>播放列表</span>
+            <span>清空列表</span>
+          </p>
+          <ul class="player_list">
+            <li v-for="item in playListDetail" :key="item.mid">
+              <span :class="currentIndex === item.mid ? 'icon_current_play' : ''"></span>
+              <span>{{item.name}}</span>
+              <span>
+                <span v-for="(singer, index) in item.singer" :key="singer.mid">
+                  <span v-if="index !== 0">/</span>
+                  <span>{{singer.name}}</span>
+                </span>
+              </span>
+              <span>{{_formatTime(item.interval)}}</span>
+            </li>
+          </ul>
+        </div>
+        <!--    歌词展示-->
+        <div class="player_lyric_wrapper">
+          <p class="player_lyric_title">
+            <span>歌词</span>
+            <span @click="showPlayerLarge = !showPlayerLarge">收起</span>
+          </p>
+          <div class="play_lyric_box">
+            <scroll-lock class="play_lyric_box_inner">
+              <p ref="songLyric" :class="currentLyric === index? 'currentLyric':''" :data-time="lyric.substr(1, 8)" v-for="(lyric, index) in currentSongLrc" :key="index">{{lyric.slice(10)}}</p>
+            </scroll-lock>
+          </div>
+        </div>
       </div>
-      <!--    歌词展示-->
-      <div></div>
       <!--    播放组件-->
       <div>
         <audio :src="songSrc" ref="playControl"></audio>
       </div>
     </div>
-    <div class="player_small" v-show="playMini">
+    <div class="player_small">
       <div class="player_control_icon_box">
         <span class="icon_prev_control icon_prev" title="上一首" @click="prevSong"></span>
         <span class="icon_play_control" :class="playing?'icon_play':'icon_paused'" @click="pausedBtn" title="播放/暂停"></span>
@@ -37,7 +65,7 @@
           <i v-show="playType === 0" class="icon_loop_order" title="列表循环"></i>
           <i v-show="playType === 2" class="icon_loop_random" title="随机播放"></i>
         </span>
-        <span class="icon_playList">
+        <span class="icon_playList" @click="showPlayerLarge = !showPlayerLarge">
           <i class="icon_play_list" title="播放列表"></i>
           <span class="player_list_num">{{playList.length}}</span>
         </span>
@@ -48,22 +76,29 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import {formatTime} from '@/assets/utils/utils';
 import PlayProgress from '@/components/playProgress';
-import {getSongDetail} from '@/assets/connect/songsList';
+import {getSongDetail, getSongLrc} from '@/assets/connect/songsList';
 
 export default {
   name: 'playMusic',
   data () {
     return {
       songSrc: '',
-      playMini: true,
+      showPlayerLarge: false,
       currentSongCover: '',
       percentage: 0,
       songDuration: 0,
       playType: 0,
       currentSongTitle: '',
       currentSongSinger: '',
-      currentSongTime: 0
+      currentSongTime: 0,
+      playListDetail: [],
+      currentSongLrc: '',
+      currentLyricTime: 0,
+      currentLyric: {
+        type: Number
+      }
     };
   },
   components: {
@@ -74,13 +109,17 @@ export default {
   },
   mounted () {
     this.watchMusicEnded();
+    this._getPlayList();
+    this._getSongLrc();
   },
   watch: {
     playList () {
       this.songUrl();
+      this._getPlayList();
     },
     currentIndex () {
       this.songUrl();
+      this._getSongLrc();
     },
     songSrc (src) {
       if (src !== '') {
@@ -113,11 +152,29 @@ export default {
         });
       });
     },
+    _getPlayList () {
+      if (this.playList.length > 0) {
+        let songIds = this.playList.join(',');
+        getSongDetail(songIds).then(res => {
+          console.log(res.data);
+          this.playListDetail = res.data.data;
+        });
+      }
+    },
+    _getSongLrc () {
+      let songId = this.playList[this.currentIndex];
+      if (songId !== undefined) {
+        getSongLrc(songId).then(res => {
+          let lyric = res.data.split('[').map(e => '[' + e).slice(6);
+          this.currentSongLrc = lyric;
+        });
+      }
+    },
     prevSong () {
       let index = this.currentIndex;
       if (this.playType === 2) {
         index = this.randomIndex(0, this.playList.length - 1);
-      } else if (this.playType === 0) {
+      } else {
         index--;
       }
       this.changeNextSong(index);
@@ -126,7 +183,7 @@ export default {
       let index = this.currentIndex;
       if (this.playType === 2) {
         index = this.randomIndex(0, this.playList.length - 1);
-      } else if (this.playType === 0) {
+      } else {
         index++;
       }
       this.changeNextSong(index);
@@ -139,6 +196,9 @@ export default {
       } else {
         musicDom.pause();
       }
+    },
+    _formatTime (num) {
+      return formatTime(num);
     },
     // 切换播放顺序
     changePlayType () {
@@ -155,6 +215,17 @@ export default {
       // 使用事件监听方式捕捉事件
       musicDom.addEventListener('timeupdate', function () { // 监听音频播放的实时时间事件
         // 用秒数来显示当前播放进度
+        console.log(musicDom.currentTime.toFixed(2));
+        _this.currentLyricTime = musicDom.currentTime.toFixed(2);
+        setInterval(() => {
+          let newTime = musicDom.currentTime.toFixed(2);
+          for (let i = 0; i < _this.$refs.songLyric.length; i++) {
+            if (_this.compareTime(_this.$refs.songLyric[i].dataset.time) < Number(newTime)) {
+              // console.log(newTime);
+              _this.currentLyric = i;
+            }
+          }
+        }, 1000);
         _this.currentSongTime = Math.floor(musicDom.currentTime);// 获取实时时间
       }, false);
     },
@@ -184,6 +255,15 @@ export default {
       let num = Min + Math.round(Rand * Range); // 四舍五入
       return num;
     },
+    compareTime (loveStory) {
+      let lrcTime;
+      // 分钟转数字可以去掉前面的0
+      let lrcTimeMin = parseInt(loveStory.split(':')[0]);
+      // 虽然末尾有0，不过要转成数字比大小
+      let lrcTimeSec = parseFloat(loveStory.split(':')[1]);
+      lrcTime = lrcTimeMin * 60 + lrcTimeSec;
+      return lrcTime;
+    },
     ...mapActions([
       'changeNextSong',
       'changePrevSong',
@@ -194,15 +274,21 @@ export default {
 </script>
 
 <style scoped>
-.player_small{
+.player_wrapper{
   position: fixed;
   left: 0;
   bottom: 0;
-  height: 80px;
   background:rgba(0,0,0,1);
   width: 100%;
   z-index: 2019;
   padding: 0 50px;
+  color: #fff;
+  box-sizing: border-box;
+}
+.player_larger{
+  height: 300px;
+  overflow: hidden;
+  font-size: 12px;
 }
 .icon_prev,
 .icon_next,
@@ -230,6 +316,7 @@ export default {
 .player_small{
   display: flex;
   align-items: center;
+  height: 80px;
 }
 .player_song_info img{
   margin: 0 20px;
@@ -296,5 +383,25 @@ export default {
   bottom: 2px;
   right: 5px;
   width: 20px;
+}
+.player_song_list_wrapper{
+  width: 60%;
+  float: left;
+}
+.player_lyric_wrapper{
+  width: 40%;
+  float: left;
+}
+.play_lyric_box_inner{
+  height: 250px;
+  overflow: auto;
+  text-align: center;
+}
+.play_lyric_box_inner{
+  line-height: 26px;
+}
+.currentLyric{
+  font-size: 14px;
+  color: #31c27c;
 }
 </style>
