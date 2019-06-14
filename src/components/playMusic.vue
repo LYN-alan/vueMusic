@@ -5,32 +5,36 @@
       <div class="player_songs_list">
         <div class="player_song_list_wrapper">
           <p class="player_list_title">
-            <span>播放列表</span>
-            <span>清空列表</span>
+            <span>播放列表({{playList.length}})</span>
+            <span class="clear_play_list" @click="clearPlayListUser()">清空列表</span>
           </p>
-          <ul class="player_list">
-            <li v-for="item in playListDetail" :key="item.mid">
-              <span :class="currentIndex === item.mid ? 'icon_current_play' : ''"></span>
-              <span>{{item.name}}</span>
-              <span>
-                <span v-for="(singer, index) in item.singer" :key="singer.mid">
-                  <span v-if="index !== 0">/</span>
-                  <span>{{singer.name}}</span>
+<!--          <scroll-lock class="player_list_lock_scroll">-->
+            <ul class="player_list">
+              <li @click="playCurrentSong(item.mid)" class="player_list_item" v-for="item in playListDetail" :key="item.mid" :class="currentSongId === item.mid ? 'currentSongItem' : ''">
+                <span :class="currentSongId === item.mid ? 'icon_current_play' : ''"></span>
+                <span>{{item.name}}</span>
+                <span>
+                  <span v-for="(singer, index) in item.singer" :key="singer.mid">
+                    <span v-if="index !== 0">/</span>
+                    <span>{{singer.name}}</span>
+                  </span>
                 </span>
-              </span>
-              <span>{{_formatTime(item.interval)}}</span>
-            </li>
-          </ul>
+                <span>{{_formatTime(item.interval)}}</span>
+              </li>
+            </ul>
+<!--          </scroll-lock>-->
         </div>
         <!--    歌词展示-->
         <div class="player_lyric_wrapper">
           <p class="player_lyric_title">
-            <span>歌词</span>
-            <span @click="showPlayerLarge = !showPlayerLarge">收起</span>
+            <span>{{currentSongTitle}}</span>
+            <span class="hidden_play_list" @click="showPlayerLarge = !showPlayerLarge">收起</span>
           </p>
           <div class="play_lyric_box">
             <scroll-lock class="play_lyric_box_inner">
-              <p ref="songLyric" :class="currentLyric === index? 'currentLyric':''" :data-time="lyric.substr(1, 8)" v-for="(lyric, index) in currentSongLrc" :key="index">{{lyric.slice(10)}}</p>
+              <div class="play_lyric_text" ref="playerLyric">
+                <p ref="songLyric" :class="currentLyric === index? 'currentLyric':''" :data-time="lyric.substr(1, 8)" v-for="(lyric, index) in currentSongLrc" :key="index">{{lyric.slice(10)}}</p>
+              </div>
             </scroll-lock>
           </div>
         </div>
@@ -96,9 +100,11 @@ export default {
       playListDetail: [],
       currentSongLrc: '',
       currentLyricTime: 0,
+      currentSongId: '',
       currentLyric: {
         type: Number
-      }
+      },
+      currentLyricTop: 0
     };
   },
   components: {
@@ -114,7 +120,6 @@ export default {
   },
   watch: {
     playList () {
-      this.songUrl();
       this._getPlayList();
     },
     currentIndex () {
@@ -134,12 +139,16 @@ export default {
     },
     currentSongTime () {
       this.percentage = this.currentSongTime;
+    },
+    currentLyricTop () {
+      this.$refs.playerLyric.style.top = `-${this.currentLyricTop - 100}px`;
     }
   },
   methods: {
     songUrl () {
       if (this.playing) {
         let songId = this.playList[this.currentIndex];
+        this.currentSongId = this.playList[this.currentIndex];
         this.songSrc = `https://v1.itooi.cn/tencent/url?id=${songId}&quality=128&isRedirect=1`;
       }
     },
@@ -159,6 +168,8 @@ export default {
           console.log(res.data);
           this.playListDetail = res.data.data;
         });
+      } else {
+        this.playListDetail = [];
       }
     },
     _getSongLrc () {
@@ -166,6 +177,11 @@ export default {
       if (songId !== undefined) {
         getSongLrc(songId).then(res => {
           let lyric = res.data.split('[').map(e => '[' + e).slice(6);
+          lyric.map((e, index) => {
+            if (e.slice(10).length === 1) {
+              lyric.splice(index, 1);
+            }
+          });
           this.currentSongLrc = lyric;
         });
       }
@@ -215,24 +231,28 @@ export default {
       // 使用事件监听方式捕捉事件
       musicDom.addEventListener('timeupdate', function () { // 监听音频播放的实时时间事件
         // 用秒数来显示当前播放进度
-        console.log(musicDom.currentTime.toFixed(2));
         _this.currentLyricTime = musicDom.currentTime.toFixed(2);
-        setInterval(() => {
-          let newTime = musicDom.currentTime.toFixed(2);
+        if (_this.$refs.songLyric) {
           for (let i = 0; i < _this.$refs.songLyric.length; i++) {
-            if (_this.compareTime(_this.$refs.songLyric[i].dataset.time) < Number(newTime)) {
-              // console.log(newTime);
+            if (_this.$refs.songLyric[i].className === 'currentLyric') {
+              _this.currentLyricTop = _this.$refs.songLyric[i].offsetTop;
+            }
+          }
+        }
+        let newTime = musicDom.currentTime.toFixed(2);
+        if (_this.$refs.songLyric) {
+          for (let i = 0; i < _this.$refs.songLyric.length; i++) {
+            if (_this.compareTime(_this.$refs.songLyric[i].dataset.time) < (Number(newTime) + 0.6)) {
               _this.currentLyric = i;
             }
           }
-        }, 1000);
+        }
         _this.currentSongTime = Math.floor(musicDom.currentTime);// 获取实时时间
       }, false);
     },
     watchMusicEnded () {
       let musicDom = this.$refs.playControl;
       musicDom.addEventListener('ended', () => {
-        console.log('ended');
         let index = this.currentIndex;
         if (this.playType === 2) {
           index = this.randomIndex(index, this.playList.length - 1);
@@ -260,14 +280,25 @@ export default {
       // 分钟转数字可以去掉前面的0
       let lrcTimeMin = parseInt(loveStory.split(':')[0]);
       // 虽然末尾有0，不过要转成数字比大小
-      let lrcTimeSec = parseFloat(loveStory.split(':')[1]);
-      lrcTime = lrcTimeMin * 60 + lrcTimeSec;
+      let lrcTimeSec = parseFloat(loveStory.split(':')[1]).toFixed(0);
+      lrcTime = lrcTimeMin * 60 + Number(lrcTimeSec);
       return lrcTime;
+    },
+    clearPlayListUser () {
+      console.log(1);
+      this.clearPlayList();
+      this._getPlayList();
+    },
+    playCurrentSong (id) {
+      console.log(id);
+      this.playCurrentSong(id);
     },
     ...mapActions([
       'changeNextSong',
       'changePrevSong',
-      'changePlayingState'
+      'changePlayingState',
+      'playCurrentSong',
+      'clearPlayList'
     ])
   }
 };
@@ -396,6 +427,7 @@ export default {
   height: 250px;
   overflow: auto;
   text-align: center;
+  position: relative;
 }
 .play_lyric_box_inner{
   line-height: 26px;
@@ -403,5 +435,98 @@ export default {
 .currentLyric{
   font-size: 14px;
   color: #31c27c;
+}
+.play_lyric_text{
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 0;
+}
+.player_lyric_title,
+.player_list_title{
+  height: 50px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  position: relative;
+}
+.player_list_title{
+  justify-content: space-between;
+}
+.player_lyric_title{
+  justify-content: center;
+}
+.player_songs_list{
+  overflow: hidden;
+  height: 100%;
+}
+.hidden_play_list{
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.icon_current_play{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-image: url(../assets/image/playing.svg);
+  background-size: 100% 100%;
+}
+.currentSongItem{
+  color: #31c27c;
+}
+.player_list_item{
+  box-sizing: border-box;
+  padding: 0 66px 0 20px;
+  position: relative;
+  cursor: pointer;
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+.player_list_item:hover{
+  color: #31c27c;
+}
+.player_list_item>span{
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.player_list_item>span:nth-of-type(1){
+  position: absolute;
+  left: 0;
+  top: 7px;
+}
+.player_list_item>span:nth-of-type(2){
+  width: 47%;
+}
+.player_list_item>span:nth-of-type(3){
+  width: 40%;
+}
+.player_list_item>span:nth-of-type(4){
+  position: absolute;
+  right: 30px;
+  top: 7px;
+}
+.player_list_lock_scroll{
+  height: 250px;
+  overflow: auto;
+}
+.clear_play_list{
+  padding: 6px 10px;
+  border: 1px solid #fff;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 </style>

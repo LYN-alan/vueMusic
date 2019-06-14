@@ -34,3 +34,7 @@ export const changePrevSong = ({commit, state}, index) => {
 export const changePlayingState = ({commit, state}) => {
   commit(type.SET_PLAYING_STATE, !state.playing);
 };
+// 清空播放列表
+export const clearPlayList = ({commit, state}) => {
+  commit(type.CLEAR_PLAYLIST);
+};

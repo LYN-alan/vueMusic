@@ -45,7 +45,7 @@ export default {
       console.log(id);
     },
     _formatTime (num) {
-      formatTime(num);
+      return formatTime(num);
     }
   }
 };

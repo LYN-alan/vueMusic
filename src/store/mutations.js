@@ -13,6 +13,9 @@ const mutations = {
   },
   [type.SET_CURRENT_INDEX] (state, index) {
     state.currentIndex = index;
+  },
+  [type.CLEAR_PLAYLIST] (state) {
+    state.playList = [];
   }
 };
 export default mutations;
