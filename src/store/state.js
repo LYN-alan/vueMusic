@@ -1,7 +1,8 @@
 const state = {
   playing: false,
   playList: [],
-  currentIndex: ''
+  currentIndex: '',
+  MvPlayIngState: false
 };
 
 export default state;

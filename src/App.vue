@@ -1,18 +1,25 @@
 <template>
   <div id="app">
     <Index></Index>
-    <Player></Player>
+    <Player v-show="!MvPlayIngState"></Player>
   </div>
 </template>
 
 <script>
 import Index from '@/page/index';
 import Player from '@/components/playMusic';
+import {mapGetters} from 'vuex';
 export default {
   name: 'App',
   components: {
     Index,
     Player
+  },
+  mounted () {
+    console.log(this.MvPlayIngState);
+  },
+  computed: {
+    ...mapGetters(['MvPlayIngState'])
   }
 };
 </script>

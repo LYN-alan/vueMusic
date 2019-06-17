@@ -41,3 +41,13 @@ export function formatTime (num) {
   }
   return minutes + ':' + second;
 }
+
+// 毫秒转换完成时间 0000-00-00
+export function getFormatTime (times) {
+  let YY = new Date(times).getFullYear();
+  let MM = new Date(times).getMonth() + 1;
+  let DD = new Date(times).getDate();
+  MM = MM < 10 ? '0' + MM : MM;
+  DD = DD < 10 ? '0' + DD : DD;
+  return `${YY}-${MM}-${DD}`;
+}

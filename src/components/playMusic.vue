@@ -8,7 +8,7 @@
             <span>播放列表({{playList.length}})</span>
             <span class="clear_play_list" @click="clearPlayListUser()">清空列表</span>
           </p>
-<!--          <scroll-lock class="player_list_lock_scroll">-->
+          <scroll-lock class="player_list_lock_scroll">
             <ul class="player_list">
               <li @click="playCurrentSong(item.mid)" class="player_list_item" v-for="item in playListDetail" :key="item.mid" :class="currentSongId === item.mid ? 'currentSongItem' : ''">
                 <span :class="currentSongId === item.mid ? 'icon_current_play' : ''"></span>
@@ -22,7 +22,7 @@
                 <span>{{_formatTime(item.interval)}}</span>
               </li>
             </ul>
-<!--          </scroll-lock>-->
+          </scroll-lock>
         </div>
         <!--    歌词展示-->
         <div class="player_lyric_wrapper">
@@ -347,7 +347,7 @@ export default {
 .player_small{
   display: flex;
   align-items: center;
-  height: 80px;
+  height: 70px;
 }
 .player_song_info img{
   margin: 0 20px;
@@ -374,6 +374,9 @@ export default {
   font-size: 14px;
   line-height: 35px;
   height: 35px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .icon_loop_single,
 .icon_loop_order,

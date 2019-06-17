@@ -68,3 +68,7 @@ export function getSongDetail (id) {
 export function getSongLrc (id) {
   return Api.get('/api/tencent/lrc', {params: {id: id}});
 }
+// 获取MV详情
+export function getMvDetail (id) {
+  return Api.get('/api/tencent/mv', {params: {id: id}});
+}

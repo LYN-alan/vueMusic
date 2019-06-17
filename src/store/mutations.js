@@ -1,7 +1,7 @@
 import * as type from './mutation-type';
 const mutations = {
   [type.SET_PLAY_LIST] (state, list) {
-    state.playList = list;
+    state.playList = state.playList.concat(list);
   },
   [type.INSERT_SONG] (state, songId) {
     if (state.playList.indexOf(songId) === -1) {
@@ -16,6 +16,9 @@ const mutations = {
   },
   [type.CLEAR_PLAYLIST] (state) {
     state.playList = [];
+  },
+  [type.SET_MV_PLAYING_STATE] (state, status) {
+    state.MvPlayIngState = status;
   }
 };
 export default mutations;

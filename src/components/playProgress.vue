@@ -66,10 +66,15 @@ export default {
       let progressBoxL = this.$refs.progressBox.offsetLeft;
       let progressBoxW = this.$refs.progressBox.offsetWidth;
       let progressWrapperL = this.$refs.progressWrapper.offsetLeft;
-      let precent = (clientX - progressWrapperL - progressBoxL) / progressBoxW;
-      this.currentPercentage = precent * 100;
-      let newCurrentTime = Math.ceil(this.songDuration * precent);
+      let nowProcess = (clientX - progressWrapperL - progressBoxL) / progressBoxW;
+      this.currentPercentage = nowProcess * 100;
+      let newCurrentTime = Math.ceil(this.songDuration * nowProcess);
       this.updateCurrentTime(newCurrentTime);
+      if (this.currentPercentage < 0) {
+        this.currentPercentage = 0;
+      } else if (this.currentPercentage > 100) {
+        this.currentPercentage = 100;
+      }
       this.$refs.iconProgress.style.left = `calc(${this.currentPercentage}% - 6px)`;
     },
     updateCurrentTime (newTime) {

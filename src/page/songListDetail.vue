@@ -12,7 +12,7 @@
         <span v-for="tag in songListData.tags" :key="tag.id" class="tag_name">{{tag.name}}</span>
       </p>
       <p class="songList_detail_listennum">播放量:{{_formatCount(songListData.visitnum)}}</p>
-      <el-button class="btn_play_all">
+      <el-button class="btn_play_all" @click="playAllSongs()">
         <i class="icon_play_all"></i>
         <span>播放全部</span>
       </el-button>
@@ -29,7 +29,7 @@
           <span>{{index + 1}}</span>
           <div class="song_item_title">
             <span class="song_item_title_text" :title="item.name">{{item.name}}</span>
-            <PlayIcon :id="item.id"></PlayIcon>
+            <PlayIcon :id="item.mid"></PlayIcon>
           </div>
           <span>
             <span v-for="(name, key) in item.singer" :key="key">
@@ -54,6 +54,7 @@ import {getSongsListDetail} from '@/assets/connect/songsList';
 import {Loading} from 'element-ui';
 import PlayIcon from '@/common/playIcon';
 import {formatCount, formatTime} from '@/assets/utils/utils';
+import {mapActions} from 'vuex';
 export default {
   name: 'songListDetail',
   components: {
@@ -61,7 +62,8 @@ export default {
   },
   data () {
     return {
-      songListData: {}
+      songListData: {},
+      songListIds: []
     };
   },
   created () {
@@ -86,6 +88,9 @@ export default {
       getSongsListDetail(options).then(res => {
         console.log(res.data);
         this.songListData = res.data.data[0];
+        this.songListData.songlist.forEach((item) => {
+          this.songListIds.push(item.mid);
+        });
         this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
           Loading.service(loadOptions).close();
         });
@@ -96,7 +101,11 @@ export default {
     },
     _formatTime (num) {
       return formatTime(num);
-    }
+    },
+    playAllSongs () {
+      this.playSongListAll(this.songListIds);
+    },
+    ...mapActions(['playSongListAll'])
   }
 };
 </script>

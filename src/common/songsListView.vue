@@ -17,15 +17,33 @@
 
 <script>
 import {formatCount} from '@/assets/utils/utils';
+import {getSongsListDetail} from '@/assets/connect/songsList';
+import {mapActions} from 'vuex';
 export default {
   name: 'songsListView',
   props: ['songsList'],
+  data () {
+    return {
+      songListIds: []
+    };
+  },
   methods: {
     _formatCount (num) {
       return formatCount(num);
     },
     palyAll (id) {
       console.log(id);
+      let options = {
+        id: id,
+        format: 0
+      };
+      getSongsListDetail(options).then(res => {
+        console.log(res.data);
+        res.data.data[0].songlist.forEach(item => {
+          this.songListIds.push(item.mid);
+        });
+        this.playSongListAll(this.songListIds);
+      });
     },
     getSongListDetail (id) {
       console.log(id);
@@ -33,7 +51,8 @@ export default {
         name: 'SongListDetail',
         params: {id: id}
       });
-    }
+    },
+    ...mapActions(['playSongListAll'])
   }
 };
 </script>
