@@ -1,7 +1,7 @@
 import * as type from './mutation-type';
 const mutations = {
   [type.SET_PLAY_LIST] (state, list) {
-    state.playList = state.playList.concat(list);
+    state.playList = list;
   },
   [type.INSERT_SONG] (state, songId) {
     if (state.playList.indexOf(songId) === -1) {

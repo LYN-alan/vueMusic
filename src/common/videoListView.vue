@@ -36,8 +36,9 @@ export default {
     getMvDetail (id) {
       this.$router.push({path: `/MvDetail/${id}`});
       this.changeMvPlayingStatus(true);
+      this.changePlayingState(false);
     },
-    ...mapActions(['changeMvPlayingStatus'])
+    ...mapActions(['changeMvPlayingStatus', 'changePlayingState'])
   }
 };
 </script>

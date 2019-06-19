@@ -1,6 +1,6 @@
 <template>
   <div class="mv_list_wrapper">
-    <div class="mv_list_item" v-for="video in videoList" :key="video.id">
+    <div class="mv_list_item" v-for="video in videoList" :key="video.id" @click="playMv(video.vid)">
       <div class="songs_cover_wrapper">
         <img ref="videoImgHeight" class="songs_cover_pic" v-lazy="video.pic" :key="video.pic" alt="">
         <i class="songs_cover_mask"></i>
@@ -24,6 +24,7 @@
 import {getSingerMv} from '@/assets/connect/songsList';
 import {formatCount} from '@/assets/utils/utils';
 import Pagination from '@/common/pagination';
+import {mapActions} from 'vuex';
 export default {
   name: 'mvList',
   props: ['totalMv'],
@@ -62,7 +63,13 @@ export default {
     changePage (val) {
       this.page = val;
       this._getSingerMv();
-    }
+    },
+    playMv (id) {
+      this.$router.push({path: `/MvDetail/${id}`});
+      this.changeMvPlayingStatus(true);
+      this.changePlayingState(false);
+    },
+    ...mapActions(['changeMvPlayingStatus', 'changePlayingState'])
   }
 };
 </script>

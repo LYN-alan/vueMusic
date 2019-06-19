@@ -10,11 +10,11 @@
           </p>
           <scroll-lock class="player_list_lock_scroll">
             <ul class="player_list">
-              <li @click="playCurrentSong(item.mid)" class="player_list_item" v-for="item in playListDetail" :key="item.mid" :class="currentSongId === item.mid ? 'currentSongItem' : ''">
+              <li @click="playCurrentSong(item.mid)" class="player_list_item" v-for="(item, index) in playListDetail" :key="index" :class="currentSongId === item.mid ? 'currentSongItem' : ''">
                 <span :class="currentSongId === item.mid ? 'icon_current_play' : ''"></span>
                 <span>{{item.name}}</span>
                 <span>
-                  <span v-for="(singer, index) in item.singer" :key="singer.mid">
+                  <span v-for="(singer, index) in item.singer" :key="index">
                     <span v-if="index !== 0">/</span>
                     <span>{{singer.name}}</span>
                   </span>
@@ -41,7 +41,7 @@
       </div>
       <!--    播放组件-->
       <div>
-        <audio :src="songSrc" ref="playControl"></audio>
+        <audio :src="songSrc" :key="songSrc" ref="playControl"></audio>
       </div>
     </div>
     <div class="player_small">
@@ -114,7 +114,6 @@ export default {
     ...mapGetters(['playList', 'playing', 'currentIndex'])
   },
   mounted () {
-    this.watchMusicEnded();
     this._getPlayList();
     this._getSongLrc();
   },
@@ -123,8 +122,10 @@ export default {
       this._getPlayList();
     },
     currentIndex () {
-      this.songUrl();
-      this._getSongLrc();
+      if (this.currentIndex !== '') {
+        this.songUrl();
+        this._getSongLrc();
+      }
     },
     songSrc (src) {
       if (src !== '') {
@@ -206,9 +207,18 @@ export default {
     },
     pausedBtn () {
       let musicDom = this.$refs.playControl;
-      this.changePlayingState();
+      if (this.playing) {
+        this.changePlayingState(false);
+      } else {
+        this.changePlayingState(true);
+      }
       if (musicDom.paused) {
-        musicDom.play();
+        if (this.songSrc === '') {
+          this.changeCurrentIndex(0);
+          this.songUrl();
+        } else {
+          musicDom.play();
+        }
       } else {
         musicDom.pause();
       }
@@ -249,6 +259,7 @@ export default {
         }
         _this.currentSongTime = Math.floor(musicDom.currentTime);// 获取实时时间
       }, false);
+      this.watchMusicEnded();
     },
     watchMusicEnded () {
       let musicDom = this.$refs.playControl;
@@ -285,7 +296,7 @@ export default {
       return lrcTime;
     },
     clearPlayListUser () {
-      console.log(1);
+      localStorage.removeItem('vuexState');
       this.clearPlayList();
       this._getPlayList();
     },
@@ -298,7 +309,8 @@ export default {
       'changePrevSong',
       'changePlayingState',
       'playCurrentSong',
-      'clearPlayList'
+      'clearPlayList',
+      'changeCurrentIndex'
     ])
   }
 };
