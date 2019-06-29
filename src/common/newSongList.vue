@@ -5,7 +5,7 @@
         <div class="songs_cover_wrapper">
           <img class="songs_cover_pic" v-lazy="song.coverImgUrl" :key="song.coverImgUrl" alt="">
           <i class="songs_cover_mask"></i>
-          <i class="songs_cover_icon_paly"></i>
+          <i class="songs_cover_icon_paly" @click="playMusic(song.id)"></i>
         </div>
         <div class="songs_info_wrapper">
           <div class="songs_info">
@@ -16,7 +16,7 @@
                 <span class="singer_name" @click="getSinger(item.id)">{{item.name}}</span>
               </span>
             </p>
-            <p class="song_info_duration">{{formatDuraton(song.playTime)}}</p>
+            <p class="song_info_duration">{{formatDuration(song.playTime)}}</p>
           </div>
         </div>
       </li>
@@ -25,16 +25,19 @@
 </template>
 
 <script>
-import {formatTime} from '@/assets/utils/utils';
+import {formatCount} from '@/assets/utils/utils';
 
 export default {
   name: 'newSongList',
   props: ['newSongList'],
   methods: {
-    formatDuraton (time) {
-      return formatTime(time);
+    formatDuration (time) {
+      return formatCount(time);
     },
     getSinger (id) {
+      console.log(id);
+    },
+    playMusic (id) {
       console.log(id);
     }
   }

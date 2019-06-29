@@ -32,10 +32,7 @@ export default {
 .index_footer{
   background-color: #000;
   color: #fff;
-  padding: 50px;
+  padding: 50px 50px 70px;
   text-align: center;
-}
-.index{
-  padding-bottom: 80px;
 }
 </style>

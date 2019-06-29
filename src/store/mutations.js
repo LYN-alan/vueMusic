@@ -13,6 +13,12 @@ const mutations = {
   },
   [type.SET_CURRENT_INDEX] (state, index) {
     state.currentIndex = index;
+  },
+  [type.CLEAR_PLAYLIST] (state) {
+    state.playList = [];
+  },
+  [type.SET_MV_PLAYING_STATE] (state, status) {
+    state.MvPlayIngState = status;
   }
 };
 export default mutations;

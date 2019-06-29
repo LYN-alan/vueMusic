@@ -1,18 +1,50 @@
 <template>
   <div class="player_wrapper">
-    <div class="player_larger" v-show="!playMini">
+    <div class="player_larger" v-show="showPlayerLarge">
       <!--    播放列表-->
       <div class="player_songs_list">
-        <p>player_large</p>
+        <div class="player_song_list_wrapper">
+          <p class="player_list_title">
+            <span>播放列表({{playList.length}})</span>
+            <span class="clear_play_list" @click="clearPlayListUser()">清空列表</span>
+          </p>
+          <scroll-lock class="player_list_lock_scroll">
+            <ul class="player_list">
+              <li @click="playCurrentSong(item.mid)" class="player_list_item" v-for="(item, index) in playListDetail" :key="index" :class="currentSongId === item.mid ? 'currentSongItem' : ''">
+                <span :class="currentSongId === item.mid ? 'icon_current_play' : ''"></span>
+                <span>{{item.name}}</span>
+                <span>
+                  <span v-for="(singer, index) in item.singer" :key="index">
+                    <span v-if="index !== 0">/</span>
+                    <span>{{singer.name}}</span>
+                  </span>
+                </span>
+                <span>{{_formatTime(item.interval)}}</span>
+              </li>
+            </ul>
+          </scroll-lock>
+        </div>
+        <!--    歌词展示-->
+        <div class="player_lyric_wrapper">
+          <p class="player_lyric_title">
+            <span>{{currentSongTitle}}</span>
+            <span class="hidden_play_list" @click="showPlayerLarge = !showPlayerLarge">收起</span>
+          </p>
+          <div class="play_lyric_box">
+            <scroll-lock class="play_lyric_box_inner">
+              <div class="play_lyric_text" ref="playerLyric">
+                <p ref="songLyric" :class="currentLyric === index? 'currentLyric':''" :data-time="lyric.substr(1, 8)" v-for="(lyric, index) in currentSongLrc" :key="index">{{lyric.slice(10)}}</p>
+              </div>
+            </scroll-lock>
+          </div>
+        </div>
       </div>
-      <!--    歌词展示-->
-      <div></div>
       <!--    播放组件-->
       <div>
-        <audio :src="songSrc" ref="playControl"></audio>
+        <audio :src="songSrc" :key="songSrc" ref="playControl"></audio>
       </div>
     </div>
-    <div class="player_small" v-show="playMini">
+    <div class="player_small">
       <div class="player_control_icon_box">
         <span class="icon_prev_control icon_prev" title="上一首" @click="prevSong"></span>
         <span class="icon_play_control" :class="playing?'icon_play':'icon_paused'" @click="pausedBtn" title="播放/暂停"></span>
@@ -37,7 +69,7 @@
           <i v-show="playType === 0" class="icon_loop_order" title="列表循环"></i>
           <i v-show="playType === 2" class="icon_loop_random" title="随机播放"></i>
         </span>
-        <span class="icon_playList">
+        <span class="icon_playList" @click="showPlayerLarge = !showPlayerLarge">
           <i class="icon_play_list" title="播放列表"></i>
           <span class="player_list_num">{{playList.length}}</span>
         </span>
@@ -48,22 +80,31 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import {formatTime} from '@/assets/utils/utils';
 import PlayProgress from '@/components/playProgress';
-import {getSongDetail} from '@/assets/connect/songsList';
+import {getSongDetail, getSongLrc} from '@/assets/connect/songsList';
 
 export default {
   name: 'playMusic',
   data () {
     return {
       songSrc: '',
-      playMini: true,
+      showPlayerLarge: false,
       currentSongCover: '',
       percentage: 0,
       songDuration: 0,
       playType: 0,
       currentSongTitle: '',
       currentSongSinger: '',
-      currentSongTime: 0
+      currentSongTime: 0,
+      playListDetail: [],
+      currentSongLrc: '',
+      currentLyricTime: 0,
+      currentSongId: '',
+      currentLyric: {
+        type: Number
+      },
+      currentLyricTop: 0
     };
   },
   components: {
@@ -73,14 +114,18 @@ export default {
     ...mapGetters(['playList', 'playing', 'currentIndex'])
   },
   mounted () {
-    this.watchMusicEnded();
+    this._getPlayList();
+    this._getSongLrc();
   },
   watch: {
     playList () {
-      this.songUrl();
+      this._getPlayList();
     },
     currentIndex () {
-      this.songUrl();
+      if (this.currentIndex !== '') {
+        this.songUrl();
+        this._getSongLrc();
+      }
     },
     songSrc (src) {
       if (src !== '') {
@@ -95,12 +140,16 @@ export default {
     },
     currentSongTime () {
       this.percentage = this.currentSongTime;
+    },
+    currentLyricTop () {
+      this.$refs.playerLyric.style.top = `-${this.currentLyricTop - 100}px`;
     }
   },
   methods: {
     songUrl () {
       if (this.playing) {
         let songId = this.playList[this.currentIndex];
+        this.currentSongId = this.playList[this.currentIndex];
         this.songSrc = `https://v1.itooi.cn/tencent/url?id=${songId}&quality=128&isRedirect=1`;
       }
     },
@@ -113,11 +162,36 @@ export default {
         });
       });
     },
+    _getPlayList () {
+      if (this.playList.length > 0) {
+        let songIds = this.playList.join(',');
+        getSongDetail(songIds).then(res => {
+          console.log(res.data);
+          this.playListDetail = res.data.data;
+        });
+      } else {
+        this.playListDetail = [];
+      }
+    },
+    _getSongLrc () {
+      let songId = this.playList[this.currentIndex];
+      if (songId !== undefined) {
+        getSongLrc(songId).then(res => {
+          let lyric = res.data.split('[').map(e => '[' + e).slice(6);
+          lyric.map((e, index) => {
+            if (e.slice(10).length === 1) {
+              lyric.splice(index, 1);
+            }
+          });
+          this.currentSongLrc = lyric;
+        });
+      }
+    },
     prevSong () {
       let index = this.currentIndex;
       if (this.playType === 2) {
         index = this.randomIndex(0, this.playList.length - 1);
-      } else if (this.playType === 0) {
+      } else {
         index--;
       }
       this.changeNextSong(index);
@@ -126,19 +200,31 @@ export default {
       let index = this.currentIndex;
       if (this.playType === 2) {
         index = this.randomIndex(0, this.playList.length - 1);
-      } else if (this.playType === 0) {
+      } else {
         index++;
       }
       this.changeNextSong(index);
     },
     pausedBtn () {
       let musicDom = this.$refs.playControl;
-      this.changePlayingState();
+      if (this.playing) {
+        this.changePlayingState(false);
+      } else {
+        this.changePlayingState(true);
+      }
       if (musicDom.paused) {
-        musicDom.play();
+        if (this.songSrc === '') {
+          this.changeCurrentIndex(0);
+          this.songUrl();
+        } else {
+          musicDom.play();
+        }
       } else {
         musicDom.pause();
       }
+    },
+    _formatTime (num) {
+      return formatTime(num);
     },
     // 切换播放顺序
     changePlayType () {
@@ -155,13 +241,29 @@ export default {
       // 使用事件监听方式捕捉事件
       musicDom.addEventListener('timeupdate', function () { // 监听音频播放的实时时间事件
         // 用秒数来显示当前播放进度
+        _this.currentLyricTime = musicDom.currentTime.toFixed(2);
+        if (_this.$refs.songLyric) {
+          for (let i = 0; i < _this.$refs.songLyric.length; i++) {
+            if (_this.$refs.songLyric[i].className === 'currentLyric') {
+              _this.currentLyricTop = _this.$refs.songLyric[i].offsetTop;
+            }
+          }
+        }
+        let newTime = musicDom.currentTime.toFixed(2);
+        if (_this.$refs.songLyric) {
+          for (let i = 0; i < _this.$refs.songLyric.length; i++) {
+            if (_this.compareTime(_this.$refs.songLyric[i].dataset.time) < (Number(newTime) + 0.6)) {
+              _this.currentLyric = i;
+            }
+          }
+        }
         _this.currentSongTime = Math.floor(musicDom.currentTime);// 获取实时时间
       }, false);
+      this.watchMusicEnded();
     },
     watchMusicEnded () {
       let musicDom = this.$refs.playControl;
       musicDom.addEventListener('ended', () => {
-        console.log('ended');
         let index = this.currentIndex;
         if (this.playType === 2) {
           index = this.randomIndex(index, this.playList.length - 1);
@@ -184,25 +286,52 @@ export default {
       let num = Min + Math.round(Rand * Range); // 四舍五入
       return num;
     },
+    compareTime (loveStory) {
+      let lrcTime;
+      // 分钟转数字可以去掉前面的0
+      let lrcTimeMin = parseInt(loveStory.split(':')[0]);
+      // 虽然末尾有0，不过要转成数字比大小
+      let lrcTimeSec = parseFloat(loveStory.split(':')[1]).toFixed(0);
+      lrcTime = lrcTimeMin * 60 + Number(lrcTimeSec);
+      return lrcTime;
+    },
+    clearPlayListUser () {
+      localStorage.removeItem('vuexState');
+      this.clearPlayList();
+      this._getPlayList();
+    },
+    playCurrentSong (id) {
+      console.log(id);
+      this.playCurrentSong(id);
+    },
     ...mapActions([
       'changeNextSong',
       'changePrevSong',
-      'changePlayingState'
+      'changePlayingState',
+      'playCurrentSong',
+      'clearPlayList',
+      'changeCurrentIndex'
     ])
   }
 };
 </script>
 
 <style scoped>
-.player_small{
+.player_wrapper{
   position: fixed;
   left: 0;
   bottom: 0;
-  height: 80px;
   background:rgba(0,0,0,1);
   width: 100%;
   z-index: 2019;
   padding: 0 50px;
+  color: #fff;
+  box-sizing: border-box;
+}
+.player_larger{
+  height: 300px;
+  overflow: hidden;
+  font-size: 12px;
 }
 .icon_prev,
 .icon_next,
@@ -230,6 +359,7 @@ export default {
 .player_small{
   display: flex;
   align-items: center;
+  height: 70px;
 }
 .player_song_info img{
   margin: 0 20px;
@@ -256,6 +386,9 @@ export default {
   font-size: 14px;
   line-height: 35px;
   height: 35px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .icon_loop_single,
 .icon_loop_order,
@@ -296,5 +429,119 @@ export default {
   bottom: 2px;
   right: 5px;
   width: 20px;
+}
+.player_song_list_wrapper{
+  width: 60%;
+  float: left;
+}
+.player_lyric_wrapper{
+  width: 40%;
+  float: left;
+}
+.play_lyric_box_inner{
+  height: 250px;
+  overflow: auto;
+  text-align: center;
+  position: relative;
+}
+.play_lyric_box_inner{
+  line-height: 26px;
+}
+.currentLyric{
+  font-size: 14px;
+  color: #31c27c;
+}
+.play_lyric_text{
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 0;
+}
+.player_lyric_title,
+.player_list_title{
+  height: 50px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  position: relative;
+}
+.player_list_title{
+  justify-content: space-between;
+}
+.player_lyric_title{
+  justify-content: center;
+}
+.player_songs_list{
+  overflow: hidden;
+  height: 100%;
+}
+.hidden_play_list{
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.icon_current_play{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-image: url(../assets/image/playing.svg);
+  background-size: 100% 100%;
+}
+.currentSongItem{
+  color: #31c27c;
+}
+.player_list_item{
+  box-sizing: border-box;
+  padding: 0 66px 0 20px;
+  position: relative;
+  cursor: pointer;
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+.player_list_item:hover{
+  color: #31c27c;
+}
+.player_list_item>span{
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.player_list_item>span:nth-of-type(1){
+  position: absolute;
+  left: 0;
+  top: 7px;
+}
+.player_list_item>span:nth-of-type(2){
+  width: 47%;
+}
+.player_list_item>span:nth-of-type(3){
+  width: 40%;
+}
+.player_list_item>span:nth-of-type(4){
+  position: absolute;
+  right: 30px;
+  top: 7px;
+}
+.player_list_lock_scroll{
+  height: 250px;
+  overflow: auto;
+}
+.clear_play_list{
+  padding: 6px 10px;
+  border: 1px solid #fff;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 </style>

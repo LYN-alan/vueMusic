@@ -9,6 +9,7 @@ import songsVideo from '@/page/songsVideo';
 import Search from '@/page/search';
 import SongListDetail from '@/page/songListDetail';
 import SingerDetail from '@/page/singerDetail';
+import MVDetail from '@/components/MVDetail';
 Vue.use(Router);
 
 export default new Router({
@@ -66,7 +67,11 @@ export default new Router({
       path: '/singerDetail/:id',
       name: 'SingerDetail',
       component: SingerDetail
+    },
+    {
+      path: '/MvDetail/:id',
+      name: 'MvDetail',
+      component: MVDetail
     }
-
   ]
 });

@@ -10,6 +10,10 @@ export const playCurrentSong = ({commit, state}, songId) => {
   commit(type.SET_CURRENT_INDEX, index);
   commit(type.SET_PLAYING_STATE, true);
 };
+// 设置currentIndex
+export const changeCurrentIndex = ({commit, state}, index) => {
+  commit(type.SET_CURRENT_INDEX, index);
+};
 // 添加播放列表
 export const setPlayList = ({commit, state}, list) => {
   commit(type.SET_PLAY_LIST, list);
@@ -31,6 +35,22 @@ export const changePrevSong = ({commit, state}, index) => {
   }
 };
 // 播放、暂停状态切换
-export const changePlayingState = ({commit, state}) => {
-  commit(type.SET_PLAYING_STATE, !state.playing);
+export const changePlayingState = ({commit, state}, status) => {
+  commit(type.SET_PLAYING_STATE, status);
+};
+// 清空播放列表
+export const clearPlayList = ({commit, state}) => {
+  commit(type.CLEAR_PLAYLIST);
+  commit(type.SET_CURRENT_INDEX, '');
+};
+// 播放歌单全部音乐
+export const playSongListAll = ({commit, state}, ids) => {
+  commit(type.SET_PLAY_LIST, ids);
+  let index = state.playList.indexOf(ids[0]);
+  commit(type.SET_CURRENT_INDEX, index);
+  commit(type.SET_PLAYING_STATE, true);
+};
+// 改变视频播放器的显示状态
+export const changeMvPlayingStatus = ({commit, state}, status) => {
+  commit(type.SET_MV_PLAYING_STATE, status);
 };

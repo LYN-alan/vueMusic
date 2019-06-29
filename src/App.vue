@@ -1,18 +1,31 @@
 <template>
   <div id="app">
     <Index></Index>
-    <Player></Player>
+    <Player v-if="!MvPlayIngState"></Player>
   </div>
 </template>
 
 <script>
 import Index from '@/page/index';
 import Player from '@/components/playMusic';
+import {mapGetters, mapActions} from 'vuex';
 export default {
   name: 'App',
   components: {
     Index,
     Player
+  },
+  mounted () {
+    console.log(this.MvPlayIngState);
+    window.addEventListener('beforeunload', e => {
+      localStorage.setItem('vuexState', JSON.stringify(this.$store.state.playList));
+    });
+  },
+  computed: {
+    ...mapGetters(['MvPlayIngState'])
+  },
+  methods: {
+    ...mapActions(['changePlayingState'])
   }
 };
 </script>

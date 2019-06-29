@@ -1,6 +1,6 @@
 <template>
   <div class="video_list_view">
-    <div class="songs_item_wrapper" v-for="(video, key) in videoList" :key="key">
+    <div class="songs_item_wrapper" v-for="(video, key) in videoList" :key="key" @click="getMvDetail(video.vid)">
       <div class="songs_item_wrapper_box">
         <div class="songs_cover_wrapper">
           <img ref="videoImgHeight" class="songs_cover_pic" :src="video.picurl" :key="video.picurl" alt="">
@@ -22,6 +22,7 @@
 
 <script>
 import {formatCount} from '@/assets/utils/utils';
+import {mapActions} from 'vuex';
 export default {
   name: 'videoListView',
   props: ['videoList'],
@@ -31,7 +32,13 @@ export default {
     },
     getSinger (id) {
       console.log(id);
-    }
+    },
+    getMvDetail (id) {
+      this.$router.push({path: `/MvDetail/${id}`});
+      this.changeMvPlayingStatus(true);
+      this.changePlayingState(false);
+    },
+    ...mapActions(['changeMvPlayingStatus', 'changePlayingState'])
   }
 };
 </script>
